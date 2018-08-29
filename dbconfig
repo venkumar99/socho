@@ -1,0 +1,8 @@
+
+module.exports = {
+    serverSettings:{
+       serverUrl:'mongodb://ds029446.mlab.com:29446',
+       database:'vchar3-care-dev'
+    },
+    url: 'mongodb://ven1Admin:welcome88@ds029446.mlab.com:29446/vchar3-care-dev
+}
