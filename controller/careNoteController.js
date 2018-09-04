@@ -6,9 +6,9 @@ import moment from 'moment';
 var careNoteController = {}
 var user = new User();
 
-var date1 = moment.utc(Date());
+//var date1 = moment.utc(Date());
 
-console.log('Date1='+date1.minutes());
+//console.log('Date1='+date1.minutes());
 
 //Get userid
  
@@ -62,13 +62,18 @@ careNoteController.addNote = function (req, res) {
     console.log({'Inside add Note':req.body});
 
     
-    var note_dateUTC = moment.utc(Date());
+   // var note_dateUTC = moment.utc(Date());
+    var note_dateUTC = moment.utc().format('YYYY-MM-DD HH:mm:ss')
+
 
     var vitals = {Notes:{
             noteDatetime:{
-                noteHour: note_dateUTC.hours(),
-                noteMin : note_dateUTC.minutes(),
-                noteDate: note_dateUTC,
+               // noteHour: note_dateUTC.hours(),
+                noteHour: moment.utc(note_dateUTC,'HH'),
+                noteMin: moment.utc(note_dateUTC,'mm'),
+                noteDate:note_dateUTC,
+               // noteMin : note_dateUTC.minutes(),
+               // noteDate: note_dateUTC,
             },
              bloodPressure:{
                  systolic:req.body.systolic,

@@ -6,10 +6,10 @@ var ExtractJwt = require('passport-jwt').ExtractJwt;
 var jwtOptions ={};
 
 //JWTOptions.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
-//JWTOptions.secretOrKey = CONFIG.jwt_secret_key;
-jwtOptions.secretOrKey = 'tasmanianDevil';
+jwtOptions.secretOrKey = CONFIG.jwt_secret_key;
+//jwtOptions.secretOrKey = 'tasmanianDevil';
 
-console.log('signing secret Key = '+jwtOptions.secretOrKey);
+//console.log('signing secret Key = '+jwtOptions.secretOrKey);
 var userController = {}
 //Add User
 userController.register = function(req,res) {
