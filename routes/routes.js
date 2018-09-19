@@ -3,7 +3,7 @@ import passport from 'passport';
 import jwt from 'jsonwebtoken';
 import passportJWT from 'passport-jwt';
 import userController from '../controller/userController';
-import beerController from '../controller/beerController';
+
 import authController from '../controller/authController';
 import medicationController from '../controller/medicationController';
 import insuranceController from '../controller/insuranceController';
@@ -14,11 +14,6 @@ import userHealthProfileController from '../controller/userHealthProfileControll
 
 var routes = express.Router();
 
-
-routes.post('/beers',authController.isAuthenticated,beerController.addBeer);
-routes.get('/beers/',authController.isAuthenticated, beerController.list);
-routes.get('/beers/:beer_id',authController.isAuthenticated, beerController.getBeerById);
-routes.put('/beers/:beer_id',authController.isAuthenticated, beerController.updateBeer);
 
 //Route to login
 routes.post('/users/login', userController.login);
