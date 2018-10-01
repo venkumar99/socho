@@ -54,12 +54,13 @@ userController.login = function(req,res) {
     //req.checkBody("password","Invalid password").notEmpty();
   
     User.findOne({userid:req.body.userId}).exec(function(err,user){
-        console.log('inside findOne err='+user);
+        console.log('inside findOne err='+user, err);
         if(err) {
+            console.log('user not found');
             return res.status(401).json({userHasAuthenticated:false,message:'Authentication Failed. User not Found'});
         }
         else if(user) {
-            console.log({'user-found=':user});
+            
          //   res.json(user);
         
            user.verifyPassword(req.body.password, function(err, isMatch) {
@@ -85,8 +86,11 @@ userController.login = function(req,res) {
               return res.status(200).json({userHasAuthenticated:true, userid: user._id,token: JWTToken} );
             }
             
-        });
-  } 
+            });
+        } else {
+            console.log({'user not found':user}); 
+            return res.status(401).json({userHasAuthenticated:false,message:'Authentication Failed. User not Found'});
+        } 
 });
 }
 

@@ -18,11 +18,13 @@ const MongoStore = connectMongo(session);
 //IMPORT ALL THE MODELS
 import models from './models'
 import authController from './controller/authController';
+import careNoteChatController from './controller/careNoteChatController';
 
 
 import routes from './routes/routes.js';
 
 var port = CONFIG.port;
+var port2 = CONFIG.port2;
 var app = express();
 //Add Cors for Cross Origin requests 
 app.use(cors());
@@ -71,5 +73,36 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use('/api',routes);
+console.log("routes", routes , "port", port)
 app.listen(port);
+
+
+//Setting up socket
+var server = require('http').Server(app);
+var io = require('socket.io')(server);
+console.log("port", port2)
+server.listen(port2);
+
+io.on('connection', function (socket) {
+  console.log("socket id connected: ",socket.id);
+  socket.on('charStart', (data )=> {
+    console.log(data);
+    //io.emit('update')
+  });
+
+  socket.on('newMessage', (newMessage )=> {
+    console.log(newMessage);
+    //io.emit('update')
+    let response = careNoteChatController.addChat(newMessage);
+    console.log('response from serve ', response)
+    io.emit('response', newMessage);
+  });
+
+
+
+  // socket.emit('news', { hello: 'world' });
+  // socket.on('my other event', function (data) {
+  //   console.log(data);
+  // });
+});
 
