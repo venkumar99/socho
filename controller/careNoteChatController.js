@@ -8,7 +8,7 @@ var careNoteChatController = {}
 var user = new User();
 
 //Add Chats
-careNoteChatController.addChat = function (req, res) {
+careNoteChatController.addChat = function (req, io) {
     console.log({'careNoteChatController add Note':req});
 
     var note_dateUTC = moment.utc().format('YYYY-MM-DD HH:mm:ss');
@@ -39,16 +39,11 @@ careNoteChatController.addChat = function (req, res) {
             {safe:true,upsert:true}
             ).exec(function (err, careNoteChat) {
                 if (err) {
-                    //  res.send('Error updating Care Notes '+ err);
-                    //return res.status(400).json({Error:err,message:'Error adding Care Notes Chat! '})
+
                     return 'Error adding Care Notes Chat! '
                 } else {
-                    console.log('Chat Added');
-                    //return res.status(200).json({user:req.userId,message:'Care Notes Chat Added! '}) 
-                    //  res.json(careNote);
-                   var successMessage= 'Care Notes Chat Added! ';    
-                        console.log(successMessage);
-                       // io.emit('response', successMessage); 
+                    console.log('Chat Successfully Added');
+                    io.emit('response', req);
                 }
             });
         });

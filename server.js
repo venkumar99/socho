@@ -19,6 +19,7 @@ const MongoStore = connectMongo(session);
 import models from './models'
 import authController from './controller/authController';
 import careNoteChatController from './controller/careNoteChatController';
+import chatRoutes from './routes/chatroutes'
 
 
 import routes from './routes/routes.js';
@@ -84,25 +85,6 @@ console.log("port", port2)
 server.listen(port2);
 
 io.on('connection', function (socket) {
-  console.log("socket id connected: ",socket.id);
-  socket.on('charStart', (data )=> {
-    console.log(data);
-    //io.emit('update')
-  });
-
-  socket.on('newMessage', (newMessage )=> {
-    console.log(newMessage);
-    //io.emit('update')
-    let response = careNoteChatController.addChat(newMessage);
-    console.log('response from serve ', response)
-    io.emit('response', newMessage);
-  });
-
-
-
-  // socket.emit('news', { hello: 'world' });
-  // socket.on('my other event', function (data) {
-  //   console.log(data);
-  // });
+  chatRoutes(socket, io);
 });
 
