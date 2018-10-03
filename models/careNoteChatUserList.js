@@ -4,7 +4,7 @@ import mongoose, {
 } from 'mongoose';
 
 
-var CareNoteChatSchema = new mongoose.Schema({
+var CareNoteChatUserListSchema = new mongoose.Schema({
     userObjectId: {
         type: SchemaTypes.ObjectId,
         ref: 'User',
@@ -34,29 +34,7 @@ var CareNoteChatSchema = new mongoose.Schema({
         lastName: {
             type: String
         }
-    }],
-    groupMessage: [{
-        chatDatetime: {
-            chatDate:{
-                type:Date,
-            },
-            chatHour:{
-                type: Number,
-            },
-            chatMin:{
-                type: Number,
-            }
-        },
-        userName: {
-            type: String
-        },
-        message: {
-            type: String,
-        },
-        userId: {
-            type: String
-        }
-    }],
+    }]
 });
 
-module.exports = mongoose.model('CareNoteChat', CareNoteChatSchema);
+module.exports = mongoose.model('CareNoteChatUserList', CareNoteChatUserListSchema);
