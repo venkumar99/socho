@@ -94,7 +94,7 @@ careNoteChatController.addUserToGroup = function(req, io) {
 
     var note_dateUTC = moment.utc().format('YYYY-MM-DD HH:mm:ss');
 
-    var user = {
+    var userList = {
         groupUsers:{
             dateTime:{
                 date:note_dateUTC,
@@ -116,7 +116,7 @@ careNoteChatController.addUserToGroup = function(req, io) {
            
         CareNoteChatUserList.findOneAndUpdate(
             { userObjectId: user._id },
-            {$push: user},
+            {$push: userList},
             {safe:true,upsert:true}
             ).exec(function (err, userAdded) {
                 if (err) {
