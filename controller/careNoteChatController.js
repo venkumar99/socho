@@ -23,7 +23,8 @@ careNoteChatController.addChat = function (req, io) {
             },
             userName: req.userName, 
             message:req.message,
-            userId: req.userId
+            userId: req.userId,
+            addedNewUser: req.addedNewUser
             }
         };
     
@@ -32,16 +33,14 @@ careNoteChatController.addChat = function (req, io) {
         }).exec()
         .then(function (user) {
             console.log('found user'+user);
-           // res.json({vitals:vitals});
-           
+
         CareNoteChat.findOneAndUpdate(
             { userObjectId: user._id },
             {$push: chatMessage},
             {safe:true,upsert:true}
             ).exec(function (err, careNoteChat) {
                 if (err) {
-
-                    return 'Error adding Care Notes Chat! '
+                    console.log('Error adding Care Notes Chat! ');
                 } else {
                     console.log('Chat Successfully Added');
                     io.emit('response', req);
@@ -58,7 +57,9 @@ careNoteChatController.getChats = function(io) {
             console.log('Error getting list of Chat');
         }
         else {
-            io.emit('getChatData', chats[0].groupMessage); 
+            if(chats) {
+                io.emit('getChatData', chats[0].groupMessage); 
+            }
         }
     });
 } 
@@ -121,13 +122,29 @@ careNoteChatController.addUserToGroup = function(req, io) {
             ).exec(function (err, userAdded) {
                 if (err) {
                     console.log('Erorr while adding user',err);
-                    //return 'Error adding Care Notes Chat! '
                 } else {
                     console.log('User Successfully Added');
-                    //io.emit('userAdded', req);
+                    io.emit(req.userId, req.firstName + ' has been added to group');
+                    getListOfChatUser(user._id, req.firstName, io);
                 }
             });
         });
 }
+
+function getListOfChatUser(userId, newUser, io) {
+    CareNoteChatUserList.findOne({
+        userObjectId: userId
+    }).exec()
+    .then(function (userList){
+     
+        console.log('List of user for chat', userList);
+        userList.groupUsers.map(function(user) {
+            io.emit(user.friendUserId, newUser + ' has been added to group');
+        })
+       
+    }); 
+
+}
+
 
 module.exports = careNoteChatController;

@@ -10,31 +10,6 @@ var CareNoteChatSchema = new mongoose.Schema({
         ref: 'User',
         required: true,
     },
-    groupUsers: [{
-        dateTime: {
-            date:{
-                type:Date,
-            },
-            hour:{
-                type: Number,
-            },
-            min:{
-                type: Number,
-            }
-        },
-        friendUserId: {
-            type: String
-        },
-        firstName: {
-            type: String
-        },
-        middleName: {
-            type: String
-        },
-        lastName: {
-            type: String
-        }
-    }],
     groupMessage: [{
         chatDatetime: {
             chatDate:{
@@ -54,6 +29,9 @@ var CareNoteChatSchema = new mongoose.Schema({
             type: String,
         },
         userId: {
+            type: String
+        },
+        addedNewUser: {
             type: String
         }
     }],
