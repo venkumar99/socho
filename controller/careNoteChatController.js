@@ -25,12 +25,13 @@ careNoteChatController.addChat = function (req, io) {
             message:req.message,
             userId: req.userId,
             addedNewUser: req.addedNewUser
-            }
-        };
+        }
+    };
     
     User.findOne({
             userid: req.userId
-        }).exec()
+        })
+        .exec()
         .then(function (user) {
             console.log('found user'+user);
 
@@ -50,20 +51,28 @@ careNoteChatController.addChat = function (req, io) {
 }
 
 //Get List of Chats for user
-careNoteChatController.getChats = function(io) {
-    
-    CareNoteChat.find({}, function(err, chats) {
-        if(err) {
-            console.log('Error getting list of Chat');
-        }
-        else {
-            if(chats) {
-                io.emit('getChatData', chats[0].groupMessage); 
+careNoteChatController.getChats = function(req, io) {
+    console.log("get chat controller: ", req);
+    User.findOne({
+        userid: req.userId
+    })
+    .exec()
+    .then(function (user) { 
+        console.log('user data: ', user)
+        CareNoteChat.findOne({ userObjectId: user._id }).exec(function(err, chats) {
+            if(err) {
+                console.log('Error getting list of Chat');
             }
-        }
+            else {
+                console.log("chats list : ", chats)
+                if(chats) {
+                    console.log('List of message', chats);
+                    io.emit('getChatData', chats.groupMessage); 
+                }
+            }
+        });
     });
 } 
-// end of getNotes
 
 //Get Chats by Date
 careNoteChatController.getChatsByDate = function(req,res) {
