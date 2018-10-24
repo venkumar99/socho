@@ -11,6 +11,8 @@ import careNoteController from '../controller/careNoteController';
 
 import userHealthProfileController from '../controller/userHealthProfileController';
 
+import addUserController from '../controller/addUserController';
+
 
 var routes = express.Router();
 
@@ -59,6 +61,9 @@ routes.get('/insurance/:IDNum', authController.isAuthenticated,insuranceControll
 
 //Routes for Care Notes
 routes.post('/careNote',authController.isAuthenticated, careNoteController.addNote);
+
+//Routes for add new user
+routes.post('/addUser', addUserController.addUser);
 
 
 module.exports = routes;
