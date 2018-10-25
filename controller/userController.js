@@ -49,10 +49,6 @@ userController.test = function(req, res, next){
 
 //Login
 userController.login = function(req,res) {
-    console.log({"Inside Login request-Body":req.body});
-    //req.checkBody("user","Invalid username").notEmpty();
-    //req.checkBody("password","Invalid password").notEmpty();
-  
     User.findOne({userid:req.body.userId}).exec(function(err,user){
         console.log('inside findOne err='+user, err);
         if(err) {
@@ -60,29 +56,24 @@ userController.login = function(req,res) {
             return res.status(401).json({userHasAuthenticated:false,message:'Authentication Failed. User not Found'});
         }
         else if(user) {
-            
-         //   res.json(user);
-        
            user.verifyPassword(req.body.password, function(err, isMatch) {
-            if (err) { return callback(err); }
+            if (err) { 
+                return callback(err); 
+            }
             // Password did not match
             if (!isMatch) { 
                 console.log({'status':401,userHasAuthenticated:false,'message':'Authentication Failed, Wrong password'});
-                return res.status(401).json({userHasAuthenticated:false,message:'Authentication failed. Wrong password! '}) }
+                return res.status(401).json({userHasAuthenticated:false,message:'Authentication failed. Wrong password! '}) 
+            }
             // Success
-            else{
-                console.log('userid in token ='+user.userid);
-                console.log('signing secret Key = '+jwtOptions.secretOrKey);
-                
+            else {                
                 const JWTToken = jwt.sign({
                     exp: Math.floor(Date.now() / 1000) + (60 * 60),
                     "userid": user.userid,
                     "_id": user._id
                   },
-                  jwtOptions.secretOrKey
-                  
+                  jwtOptions.secretOrKey               
                 );
-            console.log('Token ='+JWTToken);
               return res.status(200).json({userHasAuthenticated:true, userid: user._id,token: JWTToken} );
             }
             
