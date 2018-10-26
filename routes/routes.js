@@ -65,6 +65,7 @@ routes.post('/careNote',authController.isAuthenticated, careNoteController.addNo
 //Routes for add new user
 routes.post('/addUser', addUserController.addUser);
 routes.get('/conformation/:token', addUserController.validateEmail);
+routes.get('/conformation/:token/:response', addUserController.emailResponse);
 
 
 module.exports = routes;

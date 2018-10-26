@@ -2,6 +2,8 @@ import jwt from 'jsonwebtoken';
 import User from '../models/user';
 import CONFIG from '../config/config';
 import nodemailer from 'nodemailer';
+import path from 'path';
+
 
 var jwtOptions ={};
 
@@ -26,7 +28,7 @@ addUserController.addUser = function(req,res) {
 
     let emailToken = jwt.sign(
         {
-            user: 'Ram'
+            user: userInfo.name
         },
         CONFIG.jwt_secret_key,
         {
@@ -43,7 +45,7 @@ addUserController.addUser = function(req,res) {
         html: `<b>${userInfo.name} want add you to his/her account.</b>
                </br> 
                <p>To give access please click to this link: </br>
-                  http://localhost:3000/api/conformation/${emailToken}
+               http://35.237.139.25:3000/api/conformation/${emailToken}
                </p>
             ` // html body
     };
@@ -66,9 +68,27 @@ addUserController.addUser = function(req,res) {
 
 addUserController.validateEmail = function(req, res) {
     console.log('email: ', req.params.token)
-    try{
+
+    try {
         const tokenVerify = jwt.verify(req.params.token, CONFIG.jwt_secret_key);
         console.log('verify email: ', tokenVerify)
+        res.sendfile(path.join('./public/emailVerify.html'));
+    } catch(e) {
+        console.log('error', e)
+    }
+}
+addUserController.emailResponse = function(req, res) {
+    console.log('email: ', req.params.token)
+    console.log('email: ', req.params.response)
+
+    try {
+        const tokenVerify = jwt.verify(req.params.token, CONFIG.jwt_secret_key);
+        console.log('verify email: ', tokenVerify)
+        if(req.params.response === 'accept') {
+            res.status(200).json('<h3>Thank you for authorization</h3>');
+        } else {
+            res.status(200).json('<h3>Thank you for decline</h3>');
+        }
     } catch(e) {
         console.log('error', e)
     }
