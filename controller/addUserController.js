@@ -1,8 +1,12 @@
 import jwt from 'jsonwebtoken';
-import User from '../models/user';
+import moment from 'moment';
 import CONFIG from '../config/config';
 import nodemailer from 'nodemailer';
 import path from 'path';
+
+import User from '../models/user';
+import AccountAccessList from '../models/accountAccessList';
+
 
 
 var jwtOptions ={};
@@ -13,57 +17,97 @@ jwtOptions.secretOrKey = CONFIG.jwt_secret_key;
 var addUserController = {}
 //Add User
 addUserController.addUser = function(req,res) { 
+    var note_dateUTC = moment.utc().format('YYYY-MM-DD HH:mm:ss');
     let userInfo = req.body.userDetail;
     console.log('adduser: ', req.body)
-    // create reusable transporter object using the default SMTP transport
-    let transporter = nodemailer.createTransport({
-        host: CONFIG.email_host,
-        port: CONFIG.email_port,
-        secure: false, // true for 465, false for other ports
-        auth: {
-            user: CONFIG.email_username, // generated ethereal user
-            pass: CONFIG.email_password // generated ethereal password
-        }
-    });
 
-    let emailToken = jwt.sign(
-        {
-            user: userInfo.name
-        },
-        CONFIG.jwt_secret_key,
-        {
-            expiresIn: '1d'
+    var userDetail = {
+        accountAccessList: {
+            dateTime: {
+                date:note_dateUTC,
+                hour:moment.utc(note_dateUTC,'HH'),
+                min:moment.utc(note_dateUTC,'mm')
+            },
+            email: userInfo.email,
+            requestStatus: userInfo.requestStatus,
+            userId : userInfo.userId,
+            fullName: userInfo.fullName,
+            authorizedLevel: userInfo.authorizedLevel,
+            relationShip: userInfo.relation
         }
-    );
-    console.log('token', 'http://localhost:3000/api/conformation/'+emailToken);
-    // setup email data with unicode symbols
-    let mailOptions = {
-        from: CONFIG.email_username, // sender address
-        to: userInfo.email, // list of receivers
-        subject: 'Confirmation', // Subject line
-        text: 'Hello world?', // plain text body
-        html: `<b>${userInfo.name} want add you to his/her account.</b>
-               </br> 
-               <p>To give access please click to this link: </br>
-               http://35.237.139.25:3000/api/conformation/${emailToken}
-               </p>
-            ` // html body
     };
 
-    // send mail with defined transport object
-    transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-            return  res.status(401).json({
-                userHasAuthenticated:false,
-                message:'Email send Failed!'
-            })
+    User.findOne({
+        userid: userInfo.userId
+    })
+    .exec()
+    .then(function (user) {
+        console.log('found user', user);
+        var account = {
+                userObjectId: user._id,
+                $push: userDetail
         }
-        res.status(200).json({successMessageId: info.messageId });
-        console.log('Message sent: %s', info.messageId);
-        // Preview only available when sending through an Ethereal account
-        console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
 
+    AccountAccessList.create(
+        account,
+        function(err, res) {
+            if (err) throw err;
+            console.log("1 document inserted");
+        }
+    ); 
+        // create reusable transporter object using the default SMTP transport
+        let transporter = nodemailer.createTransport({
+            host: CONFIG.email_host,
+            port: CONFIG.email_port,
+            secure: false, // true for 465, false for other ports
+            auth: {
+                user: CONFIG.email_username, // generated ethereal user
+                pass: CONFIG.email_password // generated ethereal password
+            }
+        });
+
+        let emailToken = jwt.sign(
+            {
+                user: userInfo.name
+            },
+            CONFIG.jwt_secret_key,
+            {
+                expiresIn: '1d'
+            }
+        );
+        console.log('token', 'http://localhost:3000/api/conformation/'+emailToken);
+        // setup email data with unicode symbols
+        let mailOptions = {
+            from: CONFIG.email_username, // sender address
+            to: userInfo.email, // list of receivers
+            subject: 'Confirmation', // Subject line
+            text: 'Hello world?', // plain text body
+            html: `<b>${userInfo.name} want add you to his/her account.</b>
+                </br> 
+                <p>To give access please click to this link: </br>
+                http://35.237.139.25:3000/api/conformation/${emailToken}
+                </p>
+                ` // html body
+        };
+
+        // send mail with defined transport object
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.log("Error while sending email:", error);
+                return  res.status(401).json({
+                    userHasAuthenticated:false,
+                    message:'Email send Failed!'
+                })
+            }
+            res.status(200).json({successMessageId: info.messageId });
+            console.log('Message sent: %s', info.messageId);
+            // Preview only available when sending through an Ethereal account
+            console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+
+        });
+    
     });
+
 };
 
 addUserController.validateEmail = function(req, res) {
@@ -92,6 +136,32 @@ addUserController.emailResponse = function(req, res) {
     } catch(e) {
         console.log('error', e)
     }
+}
+
+
+addUserController.getAccountDetail = function(req, res) {
+    console.log("get addUser controller: ", req);
+    User.findOne({
+        userid: req.userId
+    })
+    .exec()
+    .then(function (user) { 
+        console.log('user data: ', user)
+        AccountAccessList.findOne({ userObjectId: user._id }).exec(function(err, chats) {
+            if(err) {
+                console.log('Error getting list of Chat');
+                res.status(401).json({error: 'Account Not found'})
+            }
+            else {
+                console.log("account list : ", accounts)
+                if(chats) {
+                    console.log('List of message', chats);
+                    io.emit('getChatData', chats.groupMessage); 
+                    res.status(200).json({accountList: accounts.accountAccessList})
+                }
+            }
+        });
+    });
 }
 
 module.exports = addUserController;
