@@ -21,8 +21,7 @@ addUserController.addUser = function(req,res) {
     let userInfo = req.body.userDetail;
     console.log('adduser: ', req.body)
 
-    var userDetail = {
-        accountAccessList: {
+    var accountDetail = [{
             dateTime: {
                 date:note_dateUTC,
                 hour:moment.utc(note_dateUTC,'HH'),
@@ -33,22 +32,22 @@ addUserController.addUser = function(req,res) {
             userId : userInfo.userId,
             fullName: userInfo.fullName,
             authorizedLevel: userInfo.authorizedLevel,
-            relationShip: userInfo.relation
-        }
-    };
+            relationShip: userInfo.relation       
+    }];
 
     User.findOne({
         userid: userInfo.userId
     })
     .exec()
     .then(function (user) {
-        console.log('found user', user);
+        
         var account = {
                 userObjectId: user._id,
-                $push: userDetail
-        }
+                accountAccessList: accountDetail
+            }
+            console.log('found account', account);
 
-    AccountAccessList.create(
+    AccountAccessList.create( 
         account,
         function(err, res) {
             if (err) throw err;
@@ -140,25 +139,21 @@ addUserController.emailResponse = function(req, res) {
 
 
 addUserController.getAccountDetail = function(req, res) {
-    console.log("get addUser controller: ", req);
+    console.log("get addUser controller: ", req.body);
     User.findOne({
-        userid: req.userId
+        userid: req.body.userId
     })
     .exec()
     .then(function (user) { 
         console.log('user data: ', user)
-        AccountAccessList.findOne({ userObjectId: user._id }).exec(function(err, chats) {
+        AccountAccessList.findOne({ userObjectId: user._id }).exec(function(err, accounts) {
             if(err) {
                 console.log('Error getting list of Chat');
                 res.status(401).json({error: 'Account Not found'})
-            }
-            else {
+            } else {
                 console.log("account list : ", accounts)
-                if(chats) {
-                    console.log('List of message', chats);
-                    io.emit('getChatData', chats.groupMessage); 
                     res.status(200).json({accountList: accounts.accountAccessList})
-                }
+             
             }
         });
     });
