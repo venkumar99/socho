@@ -19,9 +19,11 @@ var addUserController = {}
 addUserController.addUser = function(req,res) { 
     var note_dateUTC = moment.utc().format('YYYY-MM-DD HH:mm:ss');
     let userInfo = req.body.userDetail;
-    console.log('adduser: ', req.body)
+    console.log('adduser: ', userInfo)
 
-    var accountDetail = [{
+    let checkError = false;
+
+    var accountDetail = {
             dateTime: {
                 date:note_dateUTC,
                 hour:moment.utc(note_dateUTC,'HH'),
@@ -32,28 +34,50 @@ addUserController.addUser = function(req,res) {
             userId : userInfo.userId,
             fullName: userInfo.fullName,
             authorizedLevel: userInfo.authorizedLevel,
-            relationShip: userInfo.relation       
-    }];
+            relationShip: userInfo.relationShip       
+    };
 
     User.findOne({
         userid: userInfo.userId
     })
     .exec()
     .then(function (user) {
-        
-        var account = {
-                userObjectId: user._id,
-                accountAccessList: accountDetail
-            }
-            console.log('found account', account);
 
-    AccountAccessList.create( 
-        account,
-        function(err, res) {
-            if (err) throw err;
-            console.log("1 document inserted");
-        }
-    ); 
+            AccountAccessList.findOneAndUpdate(
+                {userObjectId: user._id},
+                {$push: accountDetail},
+            ).exec()
+            .then(function (foundAccount) { 
+                console.log("found2, ",foundAccount )
+
+                    console.log("found, ",foundAccount )
+                    if(foundAccount) {
+                        console.log("Account update: ", foundAccount);
+                        addUserController.getAccountlist(userInfo.userId, res);
+                    } else {
+                        var newAccount = {
+                            userObjectId: user._id,
+                            accountAccessList: [accountDetail]
+                        };
+                        
+                        AccountAccessList.create( 
+                            newAccount,
+                            function(err, res) {
+                                if (err) {
+                                    console.log(err);
+                                    checkError = true;
+                                } else {
+                                    console.log("1 document inserted");
+                                }
+                            }
+                        ); 
+                    }
+                
+            });
+        
+    });
+
+    if(!checkError) {
         // create reusable transporter object using the default SMTP transport
         let transporter = nodemailer.createTransport({
             host: CONFIG.email_host,
@@ -93,20 +117,23 @@ addUserController.addUser = function(req,res) {
         transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
                 console.log("Error while sending email:", error);
-                return  res.status(401).json({
-                    userHasAuthenticated:false,
-                    message:'Email send Failed!'
-                })
+                return addUserController.getAccountDetail(req,res);
+                //  res.status(401).json({
+                //     userHasAuthenticated:false,
+                //     message:'Email send Failed!'
+                // })
+                
             }
             res.status(200).json({successMessageId: info.messageId });
             console.log('Message sent: %s', info.messageId);
             // Preview only available when sending through an Ethereal account
             console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+           
 
         });
-    
-    });
-
+    } else {
+        res.status(401).json({error: "Email Cannot be send"});
+    }
 };
 
 addUserController.validateEmail = function(req, res) {
@@ -139,21 +166,29 @@ addUserController.emailResponse = function(req, res) {
 
 
 addUserController.getAccountDetail = function(req, res) {
-    console.log("get addUser controller: ", req.body);
+    console.log("get addUser controller: ", req.body.userId);
+    addUserController.getAccountlist(req.body.userId, res);
+}
+
+addUserController.getAccountlist= function(id, res ){
+    console.log("get addUser controller: ",id);
     User.findOne({
-        userid: req.body.userId
+        userid: id
     })
     .exec()
     .then(function (user) { 
         console.log('user data: ', user)
         AccountAccessList.findOne({ userObjectId: user._id }).exec(function(err, accounts) {
             if(err) {
-                console.log('Error getting list of Chat');
+                console.log('Error getting list of Chat', err);
                 res.status(401).json({error: 'Account Not found'})
             } else {
                 console.log("account list : ", accounts)
-                    res.status(200).json({accountList: accounts.accountAccessList})
-             
+                    if(accounts){
+                    res.status(200).json({accountList: accounts.accountAccessList}) 
+                    } else {
+                        console.log("there is no account");
+                    }         
             }
         });
     });
