@@ -26,7 +26,7 @@ var UserSchema = new mongoose.Schema({
     username:{
         firstName:{type:String, trim:true},
         lastName:{type:String, trim:true},
-        nickName:{type:String, teim:true},
+        nickName:{type:String, trim:true},
     },
     age:{type: Number},
     gender:{type:String, enum:['M','F']},

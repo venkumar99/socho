@@ -50,9 +50,9 @@ userController.test = function(req, res, next){
 //Login
 userController.login = function(req,res) {
     User.findOne({userid:req.body.userId}).exec(function(err,user){
-        console.log('inside findOne err='+user, err);
+        console.log('inside findOne err=', user);
         if(err) {
-            console.log('user not found');
+            console.log('user not found', err);
             return res.status(401).json({userHasAuthenticated:false,message:'Authentication Failed. User not Found'});
         }
         else if(user) {
