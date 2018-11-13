@@ -6,6 +6,7 @@ import path from 'path';
 
 import User from '../models/user';
 import AccountAccessList from '../models/accountAccessList';
+import AccountList  from '../models/accountList';
 
 var jwtOptions ={};
 
@@ -109,7 +110,9 @@ addUserController.getAccountlist= function(id, res ) {
     .exec()
     .then(function (user) { 
         console.log('user data: ', user)
-        AccountAccessList.findOne({ userObjectId: user._id }).exec(function(err, accounts) {
+        AccountAccessList.findOne({ 
+            userObjectId: user._id 
+        }).exec(function(err, accounts) {
             if(err) {
                 console.log('Error getting list of Chat', err);
                 res.status(401).json({error: 'Account Not found'})
@@ -181,5 +184,22 @@ addUserController.sendEmail= function(req, res, userInfo) {
 
     });
 };
+
+
+addUserController.getListOfAccount= function(req, res) {
+    AccountList.findOne({ 
+        userObjectId: req.params.userId
+    }).exec(function(err, accounts) { 
+        if(err) {
+            console.log("Error ", err);
+        } else {
+            if(accounts) {
+                res.status(200).json({accountList: accounts.accountList}) 
+            } else {
+                res.status(204).json({accountList:[]});
+            }
+        }
+    });
+}
 
 module.exports = addUserController;
