@@ -67,7 +67,7 @@ routes.post('/addUser', addUserController.addUser);
 routes.get('/conformation/:token', addUserController.validateEmail);
 routes.get('/conformation/:token/:response', addUserController.emailResponse);
 routes.post('/account', addUserController.getAccountDetail);
-routes.get('/accountList/:userId', addUserController.getListOfAccount);
+routes.get('/accountList', addUserController.getListOfAccount);
 
 
 module.exports = routes;

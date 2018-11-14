@@ -83,8 +83,10 @@ addUserController.validateEmail = function(req, res) {
 addUserController.emailResponse = function(req, res) {
 
     try {
-        const tokenVerify = jwt.verify(req.params.token, CONFIG.jwt_secret_key);
-
+        const tokenVerify = jwt.verify(req.params.token, CONFIG.jwt_secret_key, function(err, decoded) {
+            console.log('tokenVerify', decoded);
+          });
+        
         if(req.params.response === 'accept') {
             res.status(200).json('<h3>Thank you for authorization</h3>');
         } else {
@@ -187,18 +189,26 @@ addUserController.sendEmail= function(req, res, userInfo) {
 
 
 addUserController.getListOfAccount= function(req, res) {
-    AccountList.findOne({ 
-        userObjectId: req.params.userId
-    }).exec(function(err, accounts) { 
-        if(err) {
-            console.log("Error ", err);
-        } else {
-            if(accounts) {
-                res.status(200).json({accountList: accounts.accountList}) 
+    console.log("User Email : ",req.query.userId);
+    User.findOne({
+        userid: req.query.userId
+    })
+    .exec()
+    .then(function (user) { 
+        console.log("User", user)
+        AccountList.findOne({ 
+            userObjectId:user._id  
+        }).exec(function(err, accounts) { 
+            if(err) {
+                console.log("Error ", err);
             } else {
-                res.status(204).json({accountList:[]});
+                if(accounts) {
+                    res.status(200).json({accountList: accounts.accountList}) 
+                } else {
+                    res.status(204).json({accountList:[]});
+                }
             }
-        }
+        });
     });
 }
 
