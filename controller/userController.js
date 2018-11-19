@@ -13,28 +13,34 @@ jwtOptions.secretOrKey = CONFIG.jwt_secret_key;
 var userController = {}
 //Add User
 userController.register = function(req,res) {
+    let userDetail = req.body;
     var user = new User();
-    user.userid = req.body.user_id;
-    user.email = req.body.email;
-    user.password = req.body.password;
-    user.username.firstName = req.body.firstName;
-    user.username.lastName = req.body.lastName;
-    user.username.nickName = req.body.nickName;
-    user.age = req.body.age;
-    user.gender = req.body.gender;
-    user.homePhone = req.body.homePhone;
-    user.workPhone = req.body.workPhone;
-    user.cellPhone = req.body.cellPhone;
-    
+    user.userid = userDetail.user_id;
+    user.email = userDetail.email;
+    user.password = userDetail.password;
+    user.firstName = userDetail.firstName;
+    user.lastName = userDetail.lastName;
+    user.nickName = userDetail.nickName;
+    user.age = userDetail.age;
+    user.gender = userDetail.gender;
+    user.homePhone = userDetail.homePhone;
+    user.workPhone = userDetail.workPhone;
+    user.cellPhone = userDetail.cellPhone;
+    user.dateOfBirth = userDetail.cellPhone;
 
 
 
-    user.save( function(err) {
+    user.save( function(err, id) {
         if(err) {
-            res.send('Error Adding User'+ err);
-        }
-        else {
-            res.send('User Added');
+            console.log("err ", err)
+            res.status(401).json({
+                errorMessage: 'Error while creating account'
+            });
+        } else {
+            console.log("User Added");
+            res.status(200).json({
+                successMessage: 'Account has been successfully created'
+            });
         }
     });
 }

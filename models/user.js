@@ -23,16 +23,15 @@ var UserSchema = new mongoose.Schema({
         match: [/\S+@\S+\.\S+/, 'is invalid'], 
         index: true,
     },
-    username:{
-        firstName:{type:String, trim:true},
-        lastName:{type:String, trim:true},
-        nickName:{type:String, trim:true},
-    },
+    firstName:{type:String, trim:true},
+    lastName:{type:String, trim:true},
+    nickName:{type:String, trim:true},
     age:{type: Number},
     gender:{type:String, enum:['M','F']},
     homePhone: {type: String},
     workPhone: {type: String},
     cellPhone: {type: String},
+    dateOfBirth: {type: String},
     homeAddress:
         {   
             street:{type:String},
