@@ -196,14 +196,15 @@ addUserController.getListOfAccount= function(req, res) {
     .exec()
     .then(function (user) { 
         console.log("User", user)
-        AccountList.findOne({ 
+        AccountAccessList.findOne({ 
             userObjectId:user._id  
         }).exec(function(err, accounts) { 
             if(err) {
                 console.log("Error ", err);
             } else {
                 if(accounts) {
-                    res.status(200).json({accountList: accounts.accountList}) 
+                    console.log('User List', accounts)
+                    res.status(200).json({accountList: accounts.accountAccessList}) 
                 } else {
                     res.status(204).json({accountList:[]});
                 }
