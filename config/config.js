@@ -16,6 +16,7 @@ CONFIG.db_password  = process.env.DB_PASSWORD   || 'db-password';
 CONFIG.jwt_secret_key  = process.env.JWT_ENCRYPTION || '!!buri-nazar-walle-tera-mooh-kala';
 CONFIG.jwt_expiration  = process.env.JWT_EXPIRATION || '10000';
 
+CONFIG.email_api_key   = process.env.SENDGRID_API_KEY || '';
 CONFIG.email_host      = process.env.EMAIL_HOST || '';
 CONFIG.email_port      = process.env.EMAIL_PORT || '';
 CONFIG.email_username  = process.env.EMAIL_USERNAME || '';

@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import moment from 'moment';
+import sgMail from '@sendgrid/mail';
 import CONFIG from '../config/config';
 import nodemailer from 'nodemailer';
 import path from 'path';
@@ -7,6 +8,8 @@ import path from 'path';
 import User from '../models/user';
 import AccountAccessList from '../models/accountAccessList';
 import AccountList  from '../models/accountList';
+
+//const sgMail = require('@sendgrid/mail');
 
 var jwtOptions ={};
 
@@ -60,7 +63,7 @@ addUserController.addUser = function(req,res) {
     });
 
     if(!checkError) {
-        addUserController.sendEmail(res,res, userInfo);
+        addUserController.emailSender(req,res, userInfo);
     } else {
         res.status(401).json({error: "Email Cannot be send"});
     }
@@ -129,6 +132,45 @@ addUserController.getAccountlist= function(id, res ) {
         });
     });
 };
+
+addUserController.emailSender= function(req, res, userInfo) {
+    console.log('user data and info: ', userInfo)
+    let emailToken = jwt.sign(
+        {
+            user: userInfo.name
+        },
+        CONFIG.jwt_secret_key,
+        {
+            expiresIn: '1d'
+        }
+    );
+
+    sgMail.setApiKey(CONFIG.email_api_key);
+
+    const msg = {
+    to: userInfo.email,
+    from: CONFIG.email_username,
+    subject: 'Confirmation',
+    text: 'and easy to do anywhere, even with Node.js',
+    html: `<b>${userInfo.name} want add you to his/her account.</b>
+            </br> 
+            <p>To give access please click to this link: </br>
+            http://localhost:3000/api/conformation/${emailToken}
+            </p>` // html body,
+    };
+
+    sgMail.send(msg, (error, result) => {
+        if (error) {
+        console.log("Error while sending email", error)
+        }
+        else {
+        console.log("Email was send ", result)
+        res.status(200).json({successMessageId: '123445' });
+        }
+    });
+
+    //console.log('email message: ', sgMail);
+}
 
 //Send Email
 addUserController.sendEmail= function(req, res, userInfo) {
