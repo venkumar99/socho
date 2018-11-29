@@ -137,7 +137,7 @@ addUserController.emailSender= function(req, res, userInfo) {
     console.log('user data and info: ', userInfo)
     let emailToken = jwt.sign(
         {
-            user: userInfo.name
+            user: userInfo.userId
         },
         CONFIG.jwt_secret_key,
         {
@@ -152,10 +152,10 @@ addUserController.emailSender= function(req, res, userInfo) {
     from: CONFIG.email_username,
     subject: 'Confirmation',
     text: 'and easy to do anywhere, even with Node.js',
-    html: `<b>${userInfo.name} want add you to his/her account.</b>
+    html: `<b>${userInfo.fullName} want to get access to your account.</b>
             </br> 
             <p>To give access please click to this link: </br>
-            http://localhost:3000/api/conformation/${emailToken}
+            http://35.237.139.25:3000/api/conformation/${emailToken}
             </p>` // html body,
     };
 
@@ -173,61 +173,61 @@ addUserController.emailSender= function(req, res, userInfo) {
 }
 
 //Send Email
-addUserController.sendEmail= function(req, res, userInfo) {
-    // create reusable transporter object using the default SMTP transport
-    let transporter = nodemailer.createTransport({
-        host: CONFIG.email_host,
-        port: CONFIG.email_port,
-        secure: false, // true for 465, false for other ports
-        auth: {
-            user: CONFIG.email_username, // generated ethereal user
-            pass: CONFIG.email_password // generated ethereal password
-        }
-    });
+// addUserController.sendEmail= function(req, res, userInfo) {
+//     // create reusable transporter object using the default SMTP transport
+//     let transporter = nodemailer.createTransport({
+//         host: CONFIG.email_host,
+//         port: CONFIG.email_port,
+//         secure: false, // true for 465, false for other ports
+//         auth: {
+//             user: CONFIG.email_username, // generated ethereal user
+//             pass: CONFIG.email_password // generated ethereal password
+//         }
+//     });
 
-    let emailToken = jwt.sign(
-        {
-            user: userInfo.name
-        },
-        CONFIG.jwt_secret_key,
-        {
-            expiresIn: '1d'
-        }
-    );
-    console.log('token', 'http://localhost:3000/api/conformation/'+emailToken);
-    // setup email data with unicode symbols
-    let mailOptions = {
-        from: CONFIG.email_username, // sender address
-        to: userInfo.email, // list of receivers
-        subject: 'Confirmation', // Subject line
-        text: 'Hello world?', // plain text body
-        html: `<b>${userInfo.name} want add you to his/her account.</b>
-            </br> 
-            <p>To give access please click to this link: </br>
-            http://localhost:3000/api/conformation/${emailToken}
-            </p>
-            ` // html body
-    };
+//     let emailToken = jwt.sign(
+//         {
+//             user: userInfo.name
+//         },
+//         CONFIG.jwt_secret_key,
+//         {
+//             expiresIn: '1d'
+//         }
+//     );
+//     console.log('token', 'http://localhost:3000/api/conformation/'+emailToken);
+//     // setup email data with unicode symbols
+//     let mailOptions = {
+//         from: CONFIG.email_username, // sender address
+//         to: userInfo.email, // list of receivers
+//         subject: 'Confirmation', // Subject line
+//         text: 'Hello world?', // plain text body
+//         html: `<b>${userInfo.name} want add you to his/her account.</b>
+//             </br> 
+//             <p>To give access please click to this link: </br>
+//             http://localhost:3000/api/conformation/${emailToken}
+//             </p>
+//             ` // html body
+//     };
 
-    // send mail with defined transport object
-    transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-            console.log("Error while sending email:", error);
-            //return addUserController.getAccountDetail(req,res);
-            //  res.status(401).json({
-            //     userHasAuthenticated:false,
-            //     message:'Email send Failed!'
-            // })
+//     // send mail with defined transport object
+//     transporter.sendMail(mailOptions, (error, info) => {
+//         if (error) {
+//             console.log("Error while sending email:", error);
+//             //return addUserController.getAccountDetail(req,res);
+//             //  res.status(401).json({
+//             //     userHasAuthenticated:false,
+//             //     message:'Email send Failed!'
+//             // })
             
-        } else {
-        res.status(200).json({successMessageId: info.messageId });
-        console.log('Message sent: %s', info.messageId);
-        // Preview only available when sending through an Ethereal account
-        console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
-        }
+//         } else {
+//         res.status(200).json({successMessageId: info.messageId });
+//         console.log('Message sent: %s', info.messageId);
+//         // Preview only available when sending through an Ethereal account
+//         console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+//         }
 
-    });
-};
+//     });
+// };
 
 
 addUserController.getListOfAccount= function(req, res) {
