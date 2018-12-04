@@ -8,6 +8,7 @@ import path from 'path';
 import User from '../models/user';
 import AccountAccessList from '../models/accountAccessList';
 import AccountList  from '../models/accountList';
+import consentController from './consentController';
 
 
 var jwtOptions ={};
@@ -15,7 +16,11 @@ jwtOptions.secretOrKey = CONFIG.jwt_secret_key;
 
 var addUserController = {};
 
-//Send email to user to get account approved
+/**
+ * Send email to user to get account approved
+ * @param {Object} req 
+ * @param {Object} res 
+ */
 addUserController.addUser = function(req,res) { 
     var note_dateUTC = moment.utc().format('YYYY-MM-DD HH:mm:ss');
     let userInfo = req.body.userDetail;
@@ -66,7 +71,11 @@ addUserController.addUser = function(req,res) {
     }
 };
 
-//Validate Email
+/**
+ * Validate Email
+ * @param {Object} req 
+ * @param {Object} res 
+ */
 addUserController.validateEmail = function(req, res) {
 
     try {
@@ -77,7 +86,12 @@ addUserController.validateEmail = function(req, res) {
     }
 };
 
-//Email response
+
+/**
+ * Email response
+ * @param {Object} req 
+ * @param {Object} res 
+ */
 addUserController.emailResponse = function(req, res) {
 
     try { 
@@ -94,12 +108,20 @@ addUserController.emailResponse = function(req, res) {
     }
 };
 
-//Get Account Detail
+/**
+ * Get Account 
+ * @param {Object} req 
+ * @param {Object} res 
+ */
 addUserController.getAccountDetail = function(req, res) {
     addUserController.getAccountlist(req.body.userId, res);
 };
 
-//Get Account List
+/**
+ * Get Account List
+ * @param {Object} req 
+ * @param {Object} res 
+ */
 addUserController.getAccountlist= function(id, res ) {
     User.findOne({
         userid: id
@@ -123,7 +145,11 @@ addUserController.getAccountlist= function(id, res ) {
     });
 };
 
-//This method send email to user
+/**
+ * This method send email to user
+ * @param {Object} req 
+ * @param {Object} res 
+ */
 addUserController.emailSender= function(req, res, userInfo) {
     let emailToken = jwt.sign(
         {
@@ -161,7 +187,11 @@ addUserController.emailSender= function(req, res, userInfo) {
     });
 }
 
-//Get list of approved account
+/**
+ * Get list of approved account
+ * @param {Object} req 
+ * @param {Object} res 
+ */
 addUserController.getListOfAccount= function(req, res) {
     console.log("User Email : ",req.query.userId);
     User.findOne({
@@ -187,7 +217,11 @@ addUserController.getListOfAccount= function(req, res) {
     });
 }
 
-//Update the AccountList json file with new approved account
+/**
+ * Update the AccountList json file with new approved account
+ * @param {Object} req 
+ * @param {Object} res 
+ */
 addUserController.updateAccount = function(userDetail, res) {
     var note_dateUTC = moment.utc().format('YYYY-MM-DD HH:mm:ss');
 
@@ -229,8 +263,9 @@ addUserController.updateAccount = function(userDetail, res) {
                     {safe:true,upsert:true}
                 )
                 .exec()
-                .then(function (account) {
+                .then(function (accountDetail) {
                     console.log('account', account);
+                    //consentController.addConsent(account);
                     res.status(200).json('<h3>Thank you for authorization</h3>');
                 });
             }

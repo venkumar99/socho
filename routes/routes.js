@@ -12,6 +12,7 @@ import careNoteController from '../controller/careNoteController';
 import userHealthProfileController from '../controller/userHealthProfileController';
 
 import addUserController from '../controller/addUserController';
+import consentController from '../controller/consentController';
 
 
 var routes = express.Router();
@@ -68,6 +69,10 @@ routes.get('/conformation/:token', addUserController.validateEmail);
 routes.get('/conformation/:token/:response', addUserController.emailResponse);
 routes.post('/account', addUserController.getAccountDetail);
 routes.get('/accountList', addUserController.getListOfAccount);
+
+
+//Routes for consent
+routes.get('/consent', consentController.getConsentList);
 
 
 module.exports = routes;
