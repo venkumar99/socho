@@ -1,7 +1,7 @@
 import moment from 'moment';
 
 import User from '../models/user';
-import AccountList  from '../models/accountList';
+import Consent  from '../models/consent';
 
 var consentController = {};
 
@@ -13,19 +13,17 @@ var consentController = {};
  */
 consentController.getConsentList = function(request, response) {
     User.findOne({
-        userid: req.body.userId
+        userid: request.query.userId
     })
     .exec()
     .then(function (user) { 
-        AccountList.findOne({
+        Consent.findOne({
             userObjectId: user._id  
         })
         .exec()
         .then(function (constents) { 
-            if(constentList) {
-                response.status(200).json({
-                    constentList: constents
-                });
+            if(constents) {
+                response.status(200).json(constents);
             }
         });
     });
@@ -36,19 +34,17 @@ consentController.getConsentList = function(request, response) {
  * @param {Object} request 
  * @param {Object} response 
  */
-consentController.addConsent = function(request) {
+consentController.addConsent = function(constentDetail) {
     var note_dateUTC = moment.utc().format('YYYY-MM-DD HH:mm:ss');
-    let constentDetail = request.userInfo;
-
-    let constentData = {
+    var constentData = {
         consentList: {
             dateTime: {
                 date:note_dateUTC,
                 hour:moment.utc(note_dateUTC,'HH'),
                 min:moment.utc(note_dateUTC,'mm')
             },
-            accountId: constentDetail.accountId,
             name:constentDetail.name,
+            email: constentDetail.accountEmail,
             allInformation: {
                 dateTime: {
                     date:note_dateUTC,
@@ -89,24 +85,26 @@ consentController.addConsent = function(request) {
                 },
                 value: false
             },
-
         }
-    }
+    };
 
-    User.findOne({
-        userid: req.body.userId
-    })
+    //Adding account detail to AccountList
+    Consent.findOneAndUpdate( 
+        {
+            userObjectId: constentDetail.userId,
+            userEmail: constentDetail.userEmail
+        },
+        {
+            $push: constentData
+        },
+        {
+            safe:true,
+            upsert:true
+        }
+    )
     .exec()
-    .then(function (user) { 
-        AccountList.findOneAndUpdate( 
-            {userObjectId: user._id},
-            {$push: constentData},
-            {safe:true,upsert:true}
-        )
-        .exec()
-        .then(function (constent) { 
-            console.log("Constent Added : ", constent)
-        });
+    .then(function (constent) { 
+        console.log("New Constent Added")
     });
 }
 
@@ -117,13 +115,13 @@ consentController.addConsent = function(request) {
  */
 consentController.updateConsent = function(request, response) {
 
-
+    
     User.findOne({
         userid: req.body.userId
     })
     .exec()
     .then(function (user) { 
-        AccountList.findOneAndUpdate(           
+        Consent.findOneAndUpdate(           
             {
                 userObjectId: user._id
             },

@@ -9,6 +9,9 @@ var ConsentSchema = new mongoose.Schema({
         ref: 'User',
         required: true,
     },
+    userEmail:{
+        type:String
+    },
     consentList: [{
         dateTime: {
             date:{
@@ -21,7 +24,7 @@ var ConsentSchema = new mongoose.Schema({
                 type: Number,
             }
         },
-        accountId: {
+        email:{
             type: String
         },
         name:{

@@ -265,7 +265,13 @@ addUserController.updateAccount = function(userDetail, res) {
                 .exec()
                 .then(function (accountDetail) {
                     console.log('account', account);
-                    //consentController.addConsent(account);
+                    let detail = {
+                        userId: user._id,
+                        userEmail:account.userId,
+                        accountEmail:account.email,
+                        name: account.fullName 
+                    };
+                    consentController.addConsent(detail);
                     res.status(200).json('<h3>Thank you for authorization</h3>');
                 });
             }
