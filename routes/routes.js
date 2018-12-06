@@ -73,6 +73,7 @@ routes.get('/accountList', addUserController.getListOfAccount);
 
 //Routes for consent
 routes.get('/consent', consentController.getConsentList);
+routes.post('/updateConsent', consentController.updateConsent);
 
 
 module.exports = routes;

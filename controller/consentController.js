@@ -114,7 +114,7 @@ consentController.addConsent = function(constentDetail) {
  * @param {Object} response 
  */
 consentController.updateConsent = function(request, response) {
-
+    console.log('updateConsent: ', request);
     
     User.findOne({
         userid: req.body.userId
