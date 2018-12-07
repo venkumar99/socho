@@ -114,41 +114,42 @@ consentController.addConsent = function(constentDetail) {
  * @param {Object} response 
  */
 consentController.updateConsent = function(request, response) {
-    console.log('updateConsent: ', request);
+    var note_dateUTC = moment.utc().format('YYYY-MM-DD HH:mm:ss');
     
-    User.findOne({
-        userid: req.body.userId
-    })
-    .exec()
-    .then(function (user) { 
-        Consent.findOneAndUpdate(           
-            {
-                userObjectId: user._id
-            },
-            {
-                $set:{
-                    "consentList.$[elemtent].dateTime": request.value,
-                    "consentList.$[elemtent].value": request.value,
-                }
-            },
-            {
-                arrayFilters: {
-                    "consentList.accountId": {
-                        $gte:request.accountId
-                    }
-                }
-            }
-        )
-        .exec()
-        .then(function (constents) { 
+    let accountDetail = request.body.record;
+    console.log('updateConsent: ', accountDetail, accountDetail.recordId);
+    let element = accountDetail.recordName;
 
-            if(constentList) {
-                response.status(200).json({
-                    constentList: constents
-                });
+    Consent.findOneAndUpdate(           
+        {},
+        {
+            $set:{
+                "consentList.$[elm].homeCareNotes": {
+                    dateTime: {
+                                date:note_dateUTC,
+                                hour:moment.utc(note_dateUTC,'HH'),
+                                min:moment.utc(note_dateUTC,'mm')
+                            },
+                    value:  accountDetail.value
+                }        
             }
-        });
+        },
+        {
+            arrayFilters: [{
+                "elm._id":  accountDetail.recordId                  
+            }]
+        }
+    )
+    .exec()
+    .then(function (constents) { 
+        console.log('consent: ', constents)
+        if(constents) {
+            response.status(200).json({
+                constentList: constents
+            });
+        }
     });
+   
 }
 
 /**
