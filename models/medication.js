@@ -43,6 +43,9 @@ var MedicationSchema = new mongoose.Schema({
             type: Date
         },
     },
+    storeName: {
+        type: String,
+    },
     storePhone: {
         type: String,
     },

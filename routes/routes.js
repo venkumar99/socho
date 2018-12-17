@@ -15,6 +15,7 @@ import addUserController from '../controller/addUserController';
 import consentController from '../controller/consentController';
 
 
+
 var routes = express.Router();
 
 
@@ -50,8 +51,8 @@ routes.get('/userHealth/:userid',authController.isAuthenticated, userHealthProfi
 
 //Routes for Medications
 //routes.post('/medication', authController.isAuthenticated,medicationController.addMedication);
-routes.post('/medication',authController.isAuthenticated,medicationController.addMedication);
-routes.get('/medication/:RxNum', authController.isAuthenticated,medicationController.getMedicationByRxNum);
+//routes.post('/medication',authController.isAuthenticated,medicationController.addMedication);
+//routes.get('/medication/:RxNum', authController.isAuthenticated,medicationController.getMedicationByRxNum);
 //routes.get('/medication/:RxNum', authController.isAuthenticated,medicationController.getMedicationByRxNum);
 
 //routes for Insurance
@@ -74,6 +75,10 @@ routes.get('/accountList', addUserController.getListOfAccount);
 //Routes for consent
 routes.get('/consent', consentController.getConsentList);
 routes.post('/updateConsent', consentController.updateConsent);
+
+//Routes for medication
+routes.get('/medication', medicationController.getMedicationForUser);
+routes.post('/addMedication', medicationController.addMedication);
 
 
 module.exports = routes;

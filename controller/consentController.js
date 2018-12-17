@@ -131,52 +131,40 @@ consentController.updateConsent = function(request, response) {
     Consent.findOne(           
         //{userObjectId: accountDetail.userObjectId  },
         {'consentList._id': accountDetail.recordId  },
-        // {
-        //     $set:{
-        //         "consentList.$[elm].homeCareNotes": {
-        //             dateTime: {
-        //                         date:note_dateUTC,
-        //                         hour:moment.utc(note_dateUTC,'HH'),
-        //                         min:moment.utc(note_dateUTC,'mm')
-        //                     },
-        //             value:  accountDetail.value
-        //         }        
-        //     }
-        // },
-        // {
-        //     arrayFilters: [{
-        //         "elm._id":  accountDetail.recordId                  
-        //     }]
-        // }
     )
     .exec()
     .then(function (consents) { 
-
-        if(consents) {
-            if(consents.allInformation === accountDetail.recordName) {
-                consents.allInformation.dateTime = dateTime;
-                consents.allInformation.value = accountDetail.value;
-            } else if (consents.dailyVitals === accountDetail.recordName) {
-                consents.dailyVitals.dateTime = dateTime;
-                consents.dailyVitals.value = accountDetail.value;
-            } else if (consents.homeCareNotes === accountDetail.recordName) {
-                consents.homeCareNotes.dateTime = dateTime;
-                consents.homeCareNotes.value = accountDetail.value;
-            } else if (consents.medicalRecords === accountDetail.recordName) {
-                consents.medicalRecords.dateTime = dateTime;
-                consents.medicalRecords.value = accountDetail.value;
-            } else if (consents.medication === accountDetail.recordName) {
-                consents.medication.dateTime = dateTime;
-                consents.medication.value = accountDetail.value;
+        let consentData = consents.consentList[consents.consentList.length - 1];
+        if(consentData) {
+            consentData.dateTime = dateTime;
+            if('allInformation' === accountDetail.recordName) {
+                consentData.allInformation.dateTime = dateTime;
+                consentData.allInformation.value = accountDetail.value;
+            } else if ('dailyVitals' === accountDetail.recordName) {
+                consentData.dailyVitals.dateTime = dateTime;
+                consentData.dailyVitals.value = accountDetail.value;
+            } else if ('homeCareNotes' === accountDetail.recordName) {
+                consentData.homeCareNotes.dateTime = dateTime;
+                consentData.homeCareNotes.value = accountDetail.value;
+            } else if ('medicalRecords' === accountDetail.recordName) {
+                consentData.medicalRecords.dateTime = dateTime;
+                consentData.medicalRecords.value = accountDetail.value;
+            } else if ('medication' === accountDetail.recordName) {
+                consentData.medication.dateTime = dateTime;
+                consentData.medication.value = accountDetail.value;
             } 
-            let updateData = {consents};
-                console.log("update ", updateData)
+
+            let updatedConsent = {
+                consentList: consentData
+            };
+                console.log("update : ",  consentData);
+
                 Consent.findOneAndUpdate( 
                     {
-                        userEmail: accountDetail.userEmail
+                        userEmail: consents.userEmail
                     },
                     {
-                        $push: updateData
+                        $push: updatedConsent
                     },
                     {
                         safe:true,
