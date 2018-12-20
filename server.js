@@ -3,6 +3,7 @@ import  express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
+import Agenda from 'agenda';
 //IMPORT HELMET
 import helmet from 'helmet'; //We are using Helmet for security
 import csp from 'helmet-csp';
@@ -87,4 +88,13 @@ server.listen(port2);
 io.on('connection', function (socket) {
   chatRoutes(socket, io);
 });
+
+//Setting up schedular
+const agenda = new Agenda();;
+agenda.define('printAnalyticsReport', (job, done) => {
+  console.log("Job ", job);
+  done();
+});
+//agenda.every('one seconds', 'printAnalyticsReport');
+
 
