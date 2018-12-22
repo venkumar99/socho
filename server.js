@@ -75,7 +75,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use('/api',routes);
-console.log("routes", routes , "port", port)
+//console.log("routes", routes , "port", port)
 app.listen(port);
 
 //Setting up schedular
@@ -83,13 +83,13 @@ app.listen(port);
 const agenda = new Agenda().mongo(db, 'carevenjobs');
 
 agenda.define('printAnalyticsReport', (job, done) => {
-  console.log("Job - Hello World");
-  done();
+ console.log("Job - Hello World");
+ done();
 });
 
-agenda.start();
+//agenda.start();
 
-agenda.every('one seconds', 'printAnalyticsReport');
+//agenda.every('one seconds', 'printAnalyticsReport');
 
 
 //Setting up socket
