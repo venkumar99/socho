@@ -16,6 +16,9 @@ import connectMongo from 'connect-mongo';
 //store session in mongo
 const MongoStore = connectMongo(session);
 
+//import notifcation 
+import notificationSend from './util/notificationSend';
+
 //IMPORT ALL THE MODELS
 import models from './models'
 import authController from './controller/authController';
@@ -84,12 +87,13 @@ const agenda = new Agenda().mongo(db, 'carevenjobs');
 
 agenda.define('printAnalyticsReport', (job, done) => {
   console.log("Job - Hello World");
+  //notificationSend.send('Ram');
   done();
 });
 
-agenda.start();
+//agenda.start();
 
-agenda.every('one seconds', 'printAnalyticsReport');
+//agenda.every('one seconds', 'printAnalyticsReport');
 
 
 //Setting up socket
