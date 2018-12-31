@@ -99,6 +99,21 @@ medicationController.getMedicationForUser = function(req,res) {
     });
 }
 
+//Get Medication by userID
+// medicationController.getMedicationByDateTime = function() {
+//     Medication.find(
+//         {userObjectId: user._id}
+//     )
+//     .exec(function(err,medication){
+//         if(err) {
+//             res.status(200).send('Error Getting Medication for userid');
+//         }
+//         else {
+//             res.status(200).json(medication);
+//         }
+//     });
+// }
+
 //Add Google Image API
 
 

@@ -3,10 +3,6 @@ import mongoose, {
     SchemaTypes,
     Model
 } from 'mongoose';
-import User from './user';
-
-var Controller = {};
-
 
 /*
   Some of the fields can be populated by calling api.
@@ -90,9 +86,8 @@ var MedicationSchema = new mongoose.Schema({
     },
     dateCreated: {
         type: Date,
-    }
+    },
+    
 });
-
-
 
 module.exports = mongoose.model('Medication', MedicationSchema);

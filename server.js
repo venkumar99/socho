@@ -82,7 +82,6 @@ console.log("routes", routes , "port", port)
 app.listen(port);
 
 //Setting up schedular
-//const agenda = new Agenda();
 const agenda = new Agenda().mongo(db, 'carevenjobs');
 
 agenda.define('printAnalyticsReport', (job, done) => {

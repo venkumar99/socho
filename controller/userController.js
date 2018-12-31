@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
 import User from '../models/user';
 import CONFIG from '../config/config';
+import deviceController  from './deviceController';
 //import passport from 'passport';
 var ExtractJwt = require('passport-jwt').ExtractJwt;
 var jwtOptions ={};
@@ -80,7 +81,10 @@ userController.login = function(req,res) {
                   },
                   jwtOptions.secretOrKey               
                 );
-              return res.status(200).json({userHasAuthenticated:true, userid: user._id,token: JWTToken} );
+
+                //deviceController.addDeviceDetail(req.body.deviceDetail, user._id);
+
+              return res.status(200).json({userHasAuthenticated:true, userid: user._id, token: JWTToken} );
             }
             
             });

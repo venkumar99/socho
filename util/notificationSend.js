@@ -11,11 +11,12 @@ console.log("Data send");
     databaseURL: "https://careven-dc568.firebaseio.com"
     });
 
-    var regToken = "";
-
     var payload = {
         data: {
-            notifcation: 'Time to Wake Up'
+            notifcation: {
+               title: 'Time to Wake Up',
+               body:'It already time to go to office'
+            }
         }
     };
 
