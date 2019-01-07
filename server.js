@@ -76,12 +76,12 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use('/api',routes);
-console.log("routes", routes , "port", port)
+//console.log("routes", routes , "port", port)
 app.listen(port);
 
 //Setting up schedular
 const agenda = new Agenda().mongo(db, 'carevenjobs');
-agenda.start();
+//agenda.start();
 //schedularController.schedule(agenda);
 
 
