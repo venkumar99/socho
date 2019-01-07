@@ -12,7 +12,7 @@ var deviceController = {};
  * @param {Object} response 
  */
 deviceController.getDeviceDetail = function(userId) {
-        Consent.findOne({
+    DeviceDetail.findOne({
             userObjectId: userId  
         })
         .exec()

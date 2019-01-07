@@ -87,6 +87,9 @@ var MedicationSchema = new mongoose.Schema({
     dateCreated: {
         type: Date,
     },
+    timesADay: {
+        type: Number
+    }
     
 });
 

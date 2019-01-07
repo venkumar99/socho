@@ -1,24 +1,29 @@
 var notificationSend = {};
 
-notificationSend.send = function (regToken) {
+notificationSend.send = function (scheduleData) {
 console.log("Data send");
     var admin = require("firebase-admin");
+    var serviceAccount ;
 
-    var serviceAccount = require("./careven-dc568-firebase-adminsdk-16z0i-450b565a9c.json");
+    if(scheduleData.os === 'ios') {
+        serviceAccount = require("./GoogleService-Info.plist");
+    } else {
+        serviceAccount = require("./careven-dc568-firebase-adminsdk-16z0i-450b565a9c.json");
+    }
 
     admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
     databaseURL: "https://careven-dc568.firebaseio.com"
     });
 
-    var payload = {
-        data: {
-            notifcation: {
-               title: 'Time to Wake Up',
-               body:'It already time to go to office'
-            }
-        }
-    };
+    // var payload = {
+    //     data: {
+    //         notifcation: {
+    //            title: 'Time to Wake Up',
+    //            body:'It already time to go to office'
+    //         }
+    //     }
+    // };
 
     var options = {
     priority: "high",
@@ -26,7 +31,7 @@ console.log("Data send");
     };
 
     //console.log(serviceAccount );
-    admin.messaging().sendToDevice(regToken, payload, options)
+    admin.messaging().sendToDevice(scheduleData.regToken, scheduleData.payload, options)
         .then(function(message) {
             console.log("Successfully notification send", message)
         })

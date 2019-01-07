@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import Medication from '../models/medication';
 import User from '../models/user';
+import moment from 'moment';
 
 var medicationController = {}
 var user = new User();
@@ -51,22 +52,24 @@ medicationController.addMedication = function(req,res) {
 } //end of addMedication
 
 
-//Get List of medications
-medicationController.getMedications = function(req,res) {
-    
-    Medication.find({}, function(err,medications) {
+//Get List of medications by current date
+medicationController.getMedicationsbyCurrentDate = function() {
+    var note_dateUTC = moment.utc().format('YYYY-MM-DD HH:mm:ss');
+    console.log('date',note_dateUTC )
+    Medication.find({ 
+        'discardAfterDate': {
+            '$gte': note_dateUTC,
+        }
+    }, function(err,medications) {
         if(err) {
-            res.status(204).send('Error getting list of medications');
+            console.log('error while fetching medication :', err)
         }
         else {
-            
-       //   res.json(users.map(user =>({"Name": user.userid}, {"Phone": user.phone.phoneNum}) ));
-            
-            
-           res.status(200).json(medications);
+            console.log('list of data ', medications)
+            return medications
         }
     });
-} // end of getMedications
+} // end of getMedicationsbyCurrentDate
 
 //Get Medication by ID
 medicationController.getMedicationByRxNum = function(req,res) {
