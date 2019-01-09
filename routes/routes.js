@@ -13,6 +13,7 @@ import userHealthProfileController from '../controller/userHealthProfileControll
 
 import addUserController from '../controller/addUserController';
 import consentController from '../controller/consentController';
+import schedularController from '../controller/schedularController';
 
 
 
@@ -79,6 +80,9 @@ routes.post('/updateConsent', consentController.updateConsent);
 //Routes for medication
 routes.get('/medication', medicationController.getMedicationForUser);
 routes.post('/addMedication', medicationController.addMedication);
+
+//Routes for schedular
+routes.post('/getSchedule', schedularController.getTodaySchedule);
 
 
 module.exports = routes;

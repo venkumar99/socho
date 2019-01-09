@@ -115,7 +115,9 @@ schedularController.setUpdateSchedule = function(listOfSchedule) {
                     }
                 },
                 regToken: deviceDetail.token,
-                os: deviceDetail.os
+                os: deviceDetail.os,
+                userId: schedule.userObjectId,
+                medicineName : schedule.medicationName
             }
 
             if(schedule.timesADay == 1 ) {
@@ -168,5 +170,32 @@ schedularController.sendNotification = function(scheduleList) {
         notificationSend.send(sendItems);
     })
 }
+
+schedularController.getTodaySchedule = function(request, response) {
+    let userSchedule = [];
+    if(request.body.userid) {
+        schedularController.filterUserSchedule(earlyMorningtTime, request.body.userid,userSchedule, earlyMorning);
+        schedularController.filterUserSchedule(morningTime, request.body.userid,userSchedule, morning);
+        schedularController.filterUserSchedule(noonTime, request.body.userid,userSchedule, noon);
+        schedularController.filterUserSchedule(eveningTime, request.body.userid,userSchedule, evening);
+        schedularController.filterUserSchedule(dinnerTime, request.body.userid,userSchedule, dinner);
+        schedularController.filterUserSchedule(lateNight, request.body.userid,userSchedule, lateNight);
+    }
+
+    response.status(200).json(userSchedule);
+}
+schedularController.filterUserSchedule = function(listOfData, userId, userSchedule, time) {
+    let date  = moment().toDate();
+    listOfData.map(item => {
+        if(userId === item.userId) {
+            let detail = {
+                date: item.medicineName,
+                time: time
+            }
+            userSchedule.push(detail);
+        }
+    })
+}
+
 
 module.exports = schedularController;
