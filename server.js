@@ -81,8 +81,8 @@ app.listen(port);
 
 //Setting up schedular
 const agenda = new Agenda().mongo(db, 'carevenjobs');
-//agenda.start();
-//schedularController.schedule(agenda);
+agenda.start();
+schedularController.schedule(agenda);
 
 
 

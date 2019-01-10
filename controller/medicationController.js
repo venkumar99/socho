@@ -27,6 +27,7 @@ medicationController.addMedication = function(req,res) {
     medication.rphName = req.body.rphName;
     medication.dateFilled = req.body.dateFilled;
     medication.instructions = req.body.instructions;
+    medication.timesInDay = req.body.timesInDay;
     
     console.log('userid = '+req.body.userId);
 
@@ -56,19 +57,13 @@ medicationController.addMedication = function(req,res) {
 medicationController.getMedicationsbyCurrentDate = function() {
     var note_dateUTC = moment.utc().format('YYYY-MM-DD HH:mm:ss');
     console.log('date',note_dateUTC )
-    Medication.find({ 
-        'discardAfterDate': {
-            '$gte': note_dateUTC,
-        }
-    }, function(err,medications) {
-        if(err) {
-            console.log('error while fetching medication :', err)
-        }
-        else {
-            console.log('list of data ', medications)
-            return medications
-        }
-    });
+   var medicationPromise =  Medication.find({ 
+            'discardAfterDate': {
+                '$gte': note_dateUTC,
+            }
+        }).exec(); 
+
+    return medicationPromise;
 } // end of getMedicationsbyCurrentDate
 
 //Get Medication by ID

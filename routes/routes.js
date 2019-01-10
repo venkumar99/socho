@@ -82,7 +82,7 @@ routes.get('/medication', medicationController.getMedicationForUser);
 routes.post('/addMedication', medicationController.addMedication);
 
 //Routes for schedular
-routes.post('/getSchedule', schedularController.getTodaySchedule);
+routes.get('/getMedicationSchedule', schedularController.getTodaySchedule);
 
 
 module.exports = routes;
