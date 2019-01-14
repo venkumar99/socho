@@ -207,7 +207,7 @@ addUserController.getListOfAccount= function(req, res) {
                 console.log("Error ", err);
             } else {
                 if(accounts) {
-                    console.log('User List', accounts)
+                    //console.log('User List', accounts)
                     res.status(200).json({accountList: accounts.accountList}) 
                 } else {
                     res.status(204).json({accountList:[]});

@@ -1,6 +1,7 @@
 import medicationController from './medicationController';
 import deviceController from './deviceController'; 
 import notificationSend from '../util/notificationSend';
+import ScheduleList from '../models/scheduleList';
 import moment from 'moment';
 
 var schedularController = {};
@@ -196,6 +197,29 @@ schedularController.filterUserSchedule = function(listOfData, userId, userSchedu
             userSchedule.push(detail);
         }
     })
+}
+
+/**
+ * Add Schedule
+ * @param {Object} payload 
+ */
+schedularController.addSchedule = function(payload) {
+    ScheduleList.findOneAndUpdate( 
+        {
+            userObjectId: payload.userId,
+        },
+        {
+            $push: payload.schedule
+        },
+        {
+            safe:true,
+            upsert:true
+        }
+    )
+    .exec()
+    .then(function (constent) { 
+        console.log("Schedule has been added")
+    });
 }
 
 

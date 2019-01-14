@@ -84,7 +84,12 @@ userController.login = function(req,res) {
 
                 //deviceController.addDeviceDetail(req.body.deviceDetail, user._id);
 
-              return res.status(200).json({userHasAuthenticated:true, userid: user._id, token: JWTToken} );
+              return res.status(200).json({
+                    userHasAuthenticated:true, 
+                    userid: user._id, 
+                    token: JWTToken,
+                    name: user.firstName
+                } );
             }
             
             });
