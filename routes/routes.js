@@ -15,6 +15,8 @@ import addUserController from '../controller/addUserController';
 import consentController from '../controller/consentController';
 import schedularController from '../controller/schedularController';
 
+import policyController from '../controller/policyController';
+
 
 
 var routes = express.Router();
@@ -83,6 +85,9 @@ routes.post('/addMedication', medicationController.addMedication);
 
 //Routes for schedular
 routes.get('/getMedicationSchedule', schedularController.getTodaySchedule);
+
+//Routes for term of service pdf
+routes.get('/termOfService', policyController.getTermOfService);
 
 
 module.exports = routes;
