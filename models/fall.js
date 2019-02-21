@@ -10,7 +10,7 @@ var FallSchema = new mongoose.Schema({
         ref: 'User',
         required: true,
     },
-    bathList: [{
+    fallList: [{
         dateTime: {
             date:{
                 type:Date,

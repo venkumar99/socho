@@ -10,7 +10,7 @@ var BloodPressureSchema = new mongoose.Schema({
         ref: 'User',
         required: true,
     },
-    bathList: [{
+    bloodPressureList: [{
         dateTime: {
             date:{
                 type:Date,

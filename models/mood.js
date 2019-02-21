@@ -10,7 +10,7 @@ var MoodSchema = new mongoose.Schema({
         ref: 'User',
         required: true,
     },
-    bathList: [{
+    moodList: [{
         dateTime: {
             date:{
                 type:Date,

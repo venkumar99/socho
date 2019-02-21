@@ -10,7 +10,7 @@ var NutritionSchema = new mongoose.Schema({
         ref: 'User',
         required: true,
     },
-    bathList: [{
+    nutritionList: [{
         dateTime: {
             date:{
                 type:Date,

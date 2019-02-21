@@ -10,7 +10,7 @@ var OtherVitalsSchema = new mongoose.Schema({
         ref: 'User',
         required: true,
     },
-    bathList: [{
+    otherVitalList: [{
         dateTime: {
             date:{
                 type:Date,
