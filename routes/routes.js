@@ -16,6 +16,7 @@ import consentController from '../controller/consentController';
 import schedularController from '../controller/schedularController';
 
 import policyController from '../controller/policyController';
+import dailyVaitalsController from '../controller/dailyVitalsController';
 
 
 
@@ -88,6 +89,9 @@ routes.get('/getMedicationSchedule', schedularController.getTodaySchedule);
 
 //Routes for term of service pdf
 routes.get('/termOfService', policyController.getTermOfService);
+
+//Routes for daily vitals
+routes.post('/dailyVitals', dailyVaitalsController.updateVitals);
 
 
 module.exports = routes;

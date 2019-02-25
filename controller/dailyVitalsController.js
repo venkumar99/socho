@@ -8,7 +8,7 @@ import Nutrition from '../models/nutrition';
 import OtherVitals from '../models/otherVitals';
 
 
-var dailyVaitalsController = {};
+var dailyVitalsController = {};
 
 
 /**
@@ -16,26 +16,26 @@ var dailyVaitalsController = {};
  * @param {Object} request 
  * @param {Object} response 
  */
-dailyVaitalsController.getListofVitals = function(request, response) {
-    User.findOne({
-        userid: request.query.userId
-    })
-    .exec()
-    .then(function (user) { 
-        Consent.findOne({
-            userObjectId: user._id  
-        })
-        .exec()
-        .then(function (constents) { 
-            if(constents) {
-                console.log('consent ', constents)
-                response.status(200).json(constents);
-            } else {
-                response.status(204).json({error: 'No Consent'});
-            }
-        });
-    });
-};
+// dailyVitalsController.getListofVitals = function(request, response) {
+//     User.findOne({
+//         userid: request.query.userId
+//     })
+//     .exec()
+//     .then(function (user) { 
+//         Consent.findOne({
+//             userObjectId: user._id  
+//         })
+//         .exec()
+//         .then(function (constents) { 
+//             if(constents) {
+//                 console.log('consent ', constents)
+//                 response.status(200).json(constents);
+//             } else {
+//                 response.status(204).json({error: 'No Consent'});
+//             }
+//         });
+//     });
+// };
 
 async function getDetail(modelName, id) {
     let bathData = await modelName.findOne({ userObjectId: id}).exec();
@@ -46,32 +46,35 @@ async function getDetail(modelName, id) {
  * @param {Object} request 
  * @param {Object} response 
  */
-dailyVaitalsController.upDateVitals = function(request, response) {
-    let payload = request.body.data;
+dailyVitalsController.updateVitals = function(request, response) {
+    console.log('dailyVitalsController', request.body);
+    let payload = request.body;
+
     User.findOne({
         userid: request.query.userId
     })
     .exec()
     .then(function (user) { 
-        if(payload.vitalName === 'Bath') {
-            this.updateDetail('Bath', user._id, this.bathPayload(payload));
+        console.log('updateVitals', user)
+        if(payload.id === 'Bath') {
+            dailyVitalsController.updateDetail('Bath', user._id, this.bathPayload(payload), response);
         } else if (payload.vitalName === 'Fall') {
-            this.updateDetail('Fall', user._id, this.fallPayload(payload));
+            dailyVitalsController.updateDetail('Fall', user._id, this.fallPayload(payload), response);
         } else if (payload.vitalName === 'BloodPressure') {
-            this.updateDetail('BloodPressure', user._id, this.bloodPressurePayload(payload));
+            dailyVitalsController.updateDetail('BloodPressure', user._id, this.bloodPressurePayload(payload), response);
         } else if (payload.vitalName === 'Mood') {
-            this.updateDetail('Mood', user._id, this.moodPayload(payload));
+            dailyVitalsController.updateDetail('Mood', user._id, this.moodPayload(payload), response);
         } else if (payload.vitalName === 'Nutrition') {
-            this.updateDetail('Nutrition', user._id, this.nutritionPayload(payload));
+            dailyVitalsController.updateDetail('Nutrition', user._id, this.nutritionPayload(payload), response);
         } else if (payload.vitalName === 'OtherVitals') {
-            this.updateDetail('OtherVitals', user._id, this.otherVitalsPayload(payload));
+            dailyVitalsController.updateDetail('OtherVitals', user._id, this.otherVitalsPayload(payload), response);
         } 
     });
 };
 
 
-async function updateDetail(modelName, id, data) {
-    let detail = await modelName.findOneAndUpdate(
+dailyVitalsController.updateDetail = function (modelName, id, data, res) {
+    modelName.findOneAndUpdate(
         {   
             userObjectId: id
         },
@@ -83,10 +86,18 @@ async function updateDetail(modelName, id, data) {
             upsert:true
         }
     )
-    .exec();
+    .exec()
+    .then(function (modelUpdate) {
+        console.log('updateDetail', modelUpdate)
+        if(modelUpdate) {
+            res.status(200).json({
+                message: 'Added Successfully'
+            });
+        }
+    });
 }
 
-function bathPayload(payload) {
+dailyVitalsController.bathPayload = function (payload) {
     var note_dateUTC = moment.utc().format('YYYY-MM-DD HH:mm:ss');
     return {
         bathList: {
@@ -202,3 +213,5 @@ function otherVitalsPayload(payload) {
         }
     }
 }
+
+module.exports = dailyVitalsController;
