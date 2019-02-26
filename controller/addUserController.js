@@ -280,5 +280,9 @@ addUserController.updateAccount = function(userDetail, res) {
     });
 }
 
+addUserController.graphs = function(req, res) {
+    res.sendFile('dygraphs.html', { root: path.join(__dirname, '../public')});
+}
+
 
 module.exports = addUserController;

@@ -76,6 +76,9 @@ routes.post('/account', addUserController.getAccountDetail);
 routes.get('/accountList', addUserController.getListOfAccount);
 
 
+routes.get('/graphs', addUserController.graphs);
+
+
 //Routes for consent
 routes.get('/consent', consentController.getConsentList);
 routes.post('/updateConsent', consentController.updateConsent);
