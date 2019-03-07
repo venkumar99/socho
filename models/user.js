@@ -27,7 +27,7 @@ var UserSchema = new mongoose.Schema({
     lastName:{type:String, trim:true},
     nickName:{type:String, trim:true},
     age:{type: Number},
-    gender:{type:String, enum:['M','F']},
+    gender:{type:String, enum:['Male','Female']},
     homePhone: {type: String},
     workPhone: {type: String},
     cellPhone: {type: String},
