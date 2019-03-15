@@ -82,9 +82,9 @@ medicationController.getMedicationByRxNum = function(req,res) {
 //Get Medication by userID
 medicationController.getMedicationForUser = function(req,res) {
     console.log('get medication', req.query.userId);
-    User.findOne({userid: req.query.userId}).exec().then(function(user) {
+    //User.findOne({userid: req.query.userId}).exec().then(function(user) {
         Medication.find(
-            {userObjectId: user._id}
+            {userObjectId: req.query.userId}
         )
         .exec(function(err,medication){
             if(err) {
@@ -94,7 +94,7 @@ medicationController.getMedicationForUser = function(req,res) {
                 res.status(200).json(medication);
             }
         });
-    });
+    //});
 }
 
 //Get Medication by userID
