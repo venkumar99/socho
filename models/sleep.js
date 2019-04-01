@@ -10,7 +10,7 @@ var SleepSchema = new mongoose.Schema({
         ref: 'User',
         required: true,
     },
-    fallList: [{
+    sleepList: [{
         dateTime: {
             date:{
                 type:Date,

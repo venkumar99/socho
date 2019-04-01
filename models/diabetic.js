@@ -10,7 +10,7 @@ var DiabeticSchema = new mongoose.Schema({
         ref: 'User',
         required: true,
     },
-    fallList: [{
+    diabeticList: [{
         dateTime: {
             date:{
                 type:Date,

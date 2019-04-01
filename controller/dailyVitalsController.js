@@ -6,6 +6,13 @@ import BloodPressure from '../models/bloodPressure';
 import Mood from '../models/mood';
 import Nutrition from '../models/nutrition';
 import OtherVitals from '../models/otherVitals';
+import Bowell from '../models/bowell';
+import CognitiveCare from '../models/cognitiveCare';
+import Diabetic from '../models/diabetic';
+import Hygiene from '../models/hygiene';
+import Pain from '../models/pain';
+import Sleep from '../models/sleep';
+
 
 
 var dailyVitalsController = {};
@@ -76,7 +83,8 @@ dailyVitalsController.updateVitals = function(request, response) {
  * @param {String} id 
  * @param {Object} res 
  */
-dailyVitalsController.addBath= function (payload, id, res) {
+dailyVitalsController.addBath= function (request, res) {
+    let payload = request.body;
     var note_dateUTC = moment.utc().format('YYYY-MM-DD HH:mm:ss');
     let data =  {
         bathList: {
@@ -93,7 +101,7 @@ dailyVitalsController.addBath= function (payload, id, res) {
 
     Bath.findOneAndUpdate(
         {   
-            userObjectId: id
+            userObjectId: payload.userId
         },
         {
             $push: data
@@ -119,7 +127,8 @@ dailyVitalsController.addBath= function (payload, id, res) {
  * @param {String} id 
  * @param {Object} res 
  */
-dailyVitalsController.addFall = function (payload, id, res) {
+dailyVitalsController.addFall = function (request, res) {
+    let payload = request.body;
     var note_dateUTC = moment.utc().format('YYYY-MM-DD HH:mm:ss');
     let data = {
         fallList: {
@@ -136,7 +145,7 @@ dailyVitalsController.addFall = function (payload, id, res) {
 
     Fall.findOneAndUpdate(
         {   
-            userObjectId: id
+            userObjectId: payload.userId
         },
         {
             $push: data
@@ -162,7 +171,8 @@ dailyVitalsController.addFall = function (payload, id, res) {
  * @param {String} id 
  * @param {Object} res 
  */
-dailyVitalsController.addBloodPressure = function (payload, id, res) {
+dailyVitalsController.addBloodPressure = function (request, res) {
+    let payload = request.body;
     var note_dateUTC = moment.utc().format('YYYY-MM-DD HH:mm:ss');
     let data = {
         bloodPressureList: {
@@ -195,7 +205,7 @@ dailyVitalsController.addBloodPressure = function (payload, id, res) {
 
     BloodPressure.findOneAndUpdate(
         {   
-            userObjectId: id
+            userObjectId: payload.userId
         },
         {
             $push: data
@@ -221,7 +231,8 @@ dailyVitalsController.addBloodPressure = function (payload, id, res) {
  * @param {String} id 
  * @param {Object} res 
  */
-dailyVitalsController.addMood =  function (payload, id, res) {
+dailyVitalsController.addMood =  function (request, res) {
+    let payload = request.body;
     var note_dateUTC = moment.utc().format('YYYY-MM-DD HH:mm:ss');
     let data = {
         moodList: {
@@ -237,10 +248,10 @@ dailyVitalsController.addMood =  function (payload, id, res) {
             isSick: payload.isSick
         }
     };
-console.log('addMood',payload, id )
+
     Mood.findOneAndUpdate(
         {   
-            userObjectId: id
+            userObjectId: payload.userId
         },
         {
             $push: data
@@ -265,7 +276,8 @@ console.log('addMood',payload, id )
  * @param {String} id 
  * @param {Object} res 
  */
-dailyVitalsController.addNutrition = function (payload, id, res) {
+dailyVitalsController.addNutrition = function (request, res) {
+    let payload = request.body;
     var note_dateUTC = moment.utc().format('YYYY-MM-DD HH:mm:ss');
     let data = {
         nutritionList: {
@@ -284,7 +296,7 @@ dailyVitalsController.addNutrition = function (payload, id, res) {
 
     Nutrition.findOneAndUpdate(
         {   
-            userObjectId: id
+            userObjectId: payload.userId
         },
         {
             $push: data
@@ -310,7 +322,8 @@ dailyVitalsController.addNutrition = function (payload, id, res) {
  * @param {String} id 
  * @param {Object} res 
  */
-dailyVitalsController.addOtherVitals = function (payload, id, res) {
+dailyVitalsController.addOtherVitals = function (request, res) {
+    let payload = request.body;
     var note_dateUTC = moment.utc().format('YYYY-MM-DD HH:mm:ss');
     let data = {
         otherVitalList: {
@@ -328,7 +341,7 @@ dailyVitalsController.addOtherVitals = function (payload, id, res) {
 
     OtherVitals.findOneAndUpdate(
         {   
-            userObjectId: id
+            userObjectId: payload.userId
         },
         {
             $push: data
@@ -348,4 +361,290 @@ dailyVitalsController.addOtherVitals = function (payload, id, res) {
     });
 }
 
+/**
+ * Add Bowell 
+ * @param {Object} payload 
+ * @param {String} id 
+ * @param {Object} res 
+ */
+dailyVitalsController.addBowell = function (request, res) {
+    let payload = request.body;
+    var note_dateUTC = moment.utc().format('YYYY-MM-DD HH:mm:ss');
+    let data = {
+        bowellList: {
+            dateTime: {
+                date:note_dateUTC,
+                hour:moment.utc(note_dateUTC,'HH'),
+                min:moment.utc(note_dateUTC,'mm')
+            },
+            noteText: payload.noteText, 
+            isAssistanceNeeded: payload.isAssistanceNeeded,
+            isNormal: payload.isNormal,
+            isAbdominalPain: payload.isAbdominalPain,
+            isConstipated: payload.isConstipated,
+            isAbdomialCramps: payload.isAbdomialCramps
+        }
+    };
+
+    Bowell.findOneAndUpdate(
+        {   
+            userObjectId: payload.userId
+        },
+        {
+            $push: data
+        },
+        {
+            safe:true,
+            upsert:true
+        }
+    )
+    .exec()
+    .then(function (update) {
+        console.log('bowell', update)
+        res.status(200).json({
+            message: 'Added other vital data successfully'
+        });
+        
+    });
+}
+
+/**
+ * Add CognitiveCare 
+ * @param {Object} payload 
+ * @param {String} id 
+ * @param {Object} res 
+ */
+dailyVitalsController.addCognitiveCare = function (request, res) {
+    let payload = request.body;
+    var note_dateUTC = moment.utc().format('YYYY-MM-DD HH:mm:ss');
+    let data = {
+        congnitiveCareList: {
+            dateTime: {
+                date:note_dateUTC,
+                hour:moment.utc(note_dateUTC,'HH'),
+                min:moment.utc(note_dateUTC,'mm')
+            },
+            noteText: payload.noteText, 
+            isAssistanceNeeded: payload.isAssistanceNeeded,
+            isPhoneSelected: payload.isPhoneSelected,
+            isStairSelected: payload.isStairSelected,
+            isNeighbourSelected: payload.isNeighbourSelected,
+            isFinancesSelected: payload.isFinancesSelected,
+            isShoppingSelected: payload.isShoppingSelected
+        }
+    };
+
+    CognitiveCare.findOneAndUpdate(
+        {   
+            userObjectId: payload.userId
+        },
+        {
+            $push: data
+        },
+        {
+            safe:true,
+            upsert:true
+        }
+    )
+    .exec()
+    .then(function (update) {
+        console.log('CognitiveCare', update)
+        res.status(200).json({
+            message: 'Added other vital data successfully'
+        });
+        
+    });
+}
+
+/**
+ * Add Diabetic 
+ * @param {Object} payload 
+ * @param {String} id 
+ * @param {Object} res 
+ */
+dailyVitalsController.addDiabetic = function (request, res) {
+    let payload = request.body;
+    var note_dateUTC = moment.utc().format('YYYY-MM-DD HH:mm:ss');
+    let data = {
+        diabeticList: {
+            dateTime: {
+                date:note_dateUTC,
+                hour:moment.utc(note_dateUTC,'HH'),
+                min:moment.utc(note_dateUTC,'mm')
+            },
+            noteText: payload.noteText, 
+            isAssistanceNeeded: payload.isAssistanceNeeded,
+            bloodSugar: payload.bloodSugar
+        }
+    };
+
+    Diabetic.findOneAndUpdate(
+        {   
+            userObjectId: payload.userId
+        },
+        {
+            $push: data
+        },
+        {
+            safe:true,
+            upsert:true
+        }
+    )
+    .exec()
+    .then(function (update) {
+        console.log('Diabetic', update)
+        res.status(200).json({
+            message: 'Added other vital data successfully'
+        });
+        
+    });
+}
+
+/**
+ * Add Hygiene 
+ * @param {Object} payload 
+ * @param {String} id 
+ * @param {Object} res 
+ */
+dailyVitalsController.addHygiene = function (request, res) {
+    let payload = request.body;
+    var note_dateUTC = moment.utc().format('YYYY-MM-DD HH:mm:ss');
+    let data = {
+        hygieneList: {
+            dateTime: {
+                date:note_dateUTC,
+                hour:moment.utc(note_dateUTC,'HH'),
+                min:moment.utc(note_dateUTC,'mm')
+            },
+            noteText: payload.noteText, 
+            isAssistanceNeeded: payload.isAssistanceNeeded,
+            isShowerTaken: payload.isShowerTaken,
+            isBrush: payload.isBrush,
+            isToothAche: payload.isToothAche,
+            isNailDiscolored: payload.isNailDiscolored,
+            isSkinCracked: payload.isSkinCracked,
+            isBleeding: payload.isBleeding,
+            isHairCared: payload.isHairCared,
+            isMakeUpReady: payload.isMakeUpReady
+        }
+    };
+
+    Hygiene.findOneAndUpdate(
+        {   
+            userObjectId: payload.userId
+        },
+        {
+            $push: data
+        },
+        {
+            safe:true,
+            upsert:true
+        }
+    )
+    .exec()
+    .then(function (update) {
+        console.log('Hygiene', update)
+        res.status(200).json({
+            message: 'Added other vital data successfully'
+        });
+        
+    });
+}
+
+/**
+ * Add Pain 
+ * @param {Object} payload 
+ * @param {String} id 
+ * @param {Object} res 
+ */
+dailyVitalsController.addPain = function (request, res) {
+    let payload = request.body;
+    var note_dateUTC = moment.utc().format('YYYY-MM-DD HH:mm:ss');
+    let data = {
+        painList: {
+            dateTime: {
+                date:note_dateUTC,
+                hour:moment.utc(note_dateUTC,'HH'),
+                min:moment.utc(note_dateUTC,'mm')
+            },
+            noteText: payload.noteText, 
+            isAssistanceNeeded: payload.isAssistanceNeeded,
+            sliderValue: payload.sliderValue,
+            painLocation: payload.painLocation,
+            isBathTaken: payload.isBathTaken,
+            isConstant: payload.isConstant,
+            isIntermittant: payload.isIntermittant,
+            isSleep: payload.isSleep,
+            isWalking: payload.isWalking,
+            isAppetite: payload.isAppetite
+        }
+    };
+
+    Pain.findOneAndUpdate(
+        {   
+            userObjectId: payload.userId
+        },
+        {
+            $push: data
+        },
+        {
+            safe:true,
+            upsert:true
+        }
+    )
+    .exec()
+    .then(function (update) {
+        console.log('Pain', update)
+        res.status(200).json({
+            message: 'Added other vital data successfully'
+        });
+        
+    });
+}
+
+/**
+ * Add Sleep 
+ * @param {Object} payload 
+ * @param {String} id 
+ * @param {Object} res 
+ */
+dailyVitalsController.addSleep = function (request, res) {
+    let payload = request.body;
+    var note_dateUTC = moment.utc().format('YYYY-MM-DD HH:mm:ss');
+    let data = {
+        sleepList: {
+            dateTime: {
+                date:note_dateUTC,
+                hour:moment.utc(note_dateUTC,'HH'),
+                min:moment.utc(note_dateUTC,'mm')
+            },
+            noteText: payload.noteText, 
+            isNormal: payload.isNormal,
+            isDifficulty: payload.isDifficulty,
+            isFrequent: payload.isFrequent,
+            isTired: payload.isTired
+        }
+    };
+
+    Sleep.findOneAndUpdate(
+        {   
+            userObjectId: payload.userId
+        },
+        {
+            $push: data
+        },
+        {
+            safe:true,
+            upsert:true
+        }
+    )
+    .exec()
+    .then(function (update) {
+        console.log('Sleep', update)
+        res.status(200).json({
+            message: 'Added other vital data successfully'
+        });
+        
+    });
+}
 module.exports = dailyVitalsController;

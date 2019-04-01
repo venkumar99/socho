@@ -10,7 +10,7 @@ var CognitiveCareSchema = new mongoose.Schema({
         ref: 'User',
         required: true,
     },
-    careList: [{
+    congnitiveCareList: [{
         dateTime: {
             date:{
                 type:Date,

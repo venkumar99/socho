@@ -10,7 +10,7 @@ var PainSchema = new mongoose.Schema({
         ref: 'User',
         required: true,
     },
-    fallList: [{
+    painList: [{
         dateTime: {
             date:{
                 type:Date,

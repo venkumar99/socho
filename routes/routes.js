@@ -94,7 +94,18 @@ routes.get('/getMedicationSchedule', schedularController.getTodaySchedule);
 routes.get('/termOfService', policyController.getTermOfService);
 
 //Routes for daily vitals
-routes.post('/dailyVitals', dailyVaitalsController.updateVitals);
+routes.post('/bath', dailyVaitalsController.addBath);
+routes.post('/fall', dailyVaitalsController.addFall);
+routes.post('/bloodPressure', dailyVaitalsController.addBloodPressure);
+routes.post('/mood', dailyVaitalsController.addMood);
+routes.post('/nutrition', dailyVaitalsController.addNutrition);
+routes.post('/otherVitals', dailyVaitalsController.addOtherVitals);
+routes.post('/bowell', dailyVaitalsController.addBowell);
+routes.post('/cognitiveCare', dailyVaitalsController.addCognitiveCare);
+routes.post('/diabetic', dailyVaitalsController.addDiabetic);
+routes.post('/hygiene', dailyVaitalsController.addHygiene);
+routes.post('/pain', dailyVaitalsController.addPain);
+routes.post('/sleep', dailyVaitalsController.addSleep);
 
 
 module.exports = routes;
