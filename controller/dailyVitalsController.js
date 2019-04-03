@@ -12,6 +12,7 @@ import Diabetic from '../models/diabetic';
 import Hygiene from '../models/hygiene';
 import Pain from '../models/pain';
 import Sleep from '../models/sleep';
+import LastUpdate from '../models/lastUpdate';
 
 
 
@@ -610,6 +611,7 @@ dailyVitalsController.addPain = function (request, res) {
  */
 dailyVitalsController.addSleep = function (request, res) {
     let payload = request.body;
+    let key = payload.value;
     var note_dateUTC = moment.utc().format('YYYY-MM-DD HH:mm:ss');
     let data = {
         sleepList: {
@@ -620,9 +622,7 @@ dailyVitalsController.addSleep = function (request, res) {
             },
             noteText: payload.noteText, 
             isNormal: payload.isNormal,
-            isDifficulty: payload.isDifficulty,
-            isFrequent: payload.isFrequent,
-            isTired: payload.isTired
+            [key]: true
         }
     };
 
@@ -641,10 +641,67 @@ dailyVitalsController.addSleep = function (request, res) {
     .exec()
     .then(function (update) {
         console.log('Sleep', update)
+        dailyVitalsController.lastUpdate(payload.userId, 'sleep',  payload.value);
         res.status(200).json({
             message: 'Added other vital data successfully'
         });
         
     });
 }
+
+/**
+ * Add Sleep 
+ * @param {Object} payload 
+ * @param {String} id 
+ * @param {Object} res 
+ */
+dailyVitalsController.lastUpdate = function (userId, key, value) {
+    //let payload = request.body;
+
+    LastUpdate.findOne({
+        userObjectId: userId
+    })
+    .exec()
+    .then(function (data) { 
+        console.log('last update data', data);
+        // var note_dateUTC = moment.utc().format('YYYY-MM-DD HH:mm:ss');
+        // let data = {
+        //     lastUpdateList: {
+        //         dateTime: {
+        //             date:note_dateUTC,
+        //             hour:moment.utc(note_dateUTC,'HH'),
+        //             min:moment.utc(note_dateUTC,'mm')
+        //         },
+        //         noteText: payload.noteText, 
+        //         isNormal: payload.isNormal,
+        //         isDifficulty: payload.isDifficulty,
+        //         isFrequent: payload.isFrequent,
+        //         isTired: payload.isTired
+        //     }
+        // };
+
+        // LastUpdate.findOneAndUpdate(
+        //     {   
+        //         userObjectId: payload.userId
+        //     },
+        //     {
+        //         $push: data
+        //     },
+        //     {
+        //         safe:true,
+        //         upsert:true
+        //     }
+        // )
+        // .exec()
+        // .then(function (update) {
+        //     console.log('Sleep', update)
+        //     res.status(200).json({
+        //         message: 'Added other vital data successfully'
+        //     });
+            
+        // });
+
+    });
+}
+
 module.exports = dailyVitalsController;
