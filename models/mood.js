@@ -25,17 +25,11 @@ var MoodSchema = new mongoose.Schema({
         noteText: {
             type: String
         },
-        isGood: {
-            type: Boolean
+        sliderValue: {
+            type: String
         },
-        isFatigued: {
-            type: Boolean
-        },
-        isTired: {
-            type: Boolean
-        },
-        isSick: {
-            type: Boolean
+        mood: {
+            type: String
         }
     }]
 

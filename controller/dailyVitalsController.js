@@ -55,27 +55,27 @@ async function getDetail(modelName, id) {
  * @param {Object} response 
  */
 dailyVitalsController.updateVitals = function(request, response) {
-    let payload = request.body;
+    // let payload = request.body;
 
-    User.findOne({
-        userid: payload.userId
-    })
-    .exec()
-    .then(function (user) { 
-        if(payload.id === 'Bath') {
-            dailyVitalsController.addBath(payload, user._id, response);           
-        } else if (payload.id === 'Fall') {
-            dailyVitalsController.addFall(payload, user._id, response)
-        } else if (payload.id === 'BloodPressure') {
-            dailyVitalsController.addBloodPressure(payload, user._id, response)
-        } else if (payload.id === 'Mood') {
-            dailyVitalsController.addMood(payload, user._id, response)
-        } else if (payload.id === 'Nutrition') {
-            dailyVitalsController.addNutrition(payload, user._id, response)
-        } else if (payload.id === 'OtherVitals') {
-            dailyVitalsController.addOtherVitals(payload, user._id, response)
-        } 
-    });
+    // User.findOne({
+    //     userid: payload.userId
+    // })
+    // .exec()
+    // .then(function (user) { 
+    //     if(payload.id === 'Bath') {
+    //         dailyVitalsController.addBath(payload, user._id, response);           
+    //     } else if (payload.id === 'Fall') {
+    //         dailyVitalsController.addFall(payload, user._id, response)
+    //     } else if (payload.id === 'BloodPressure') {
+    //         dailyVitalsController.addBloodPressure(payload, user._id, response)
+    //     } else if (payload.id === 'Mood') {
+    //         dailyVitalsController.addMood(payload, user._id, response)
+    //     } else if (payload.id === 'Nutrition') {
+    //         dailyVitalsController.addNutrition(payload, user._id, response)
+    //     } else if (payload.id === 'OtherVitals') {
+    //         dailyVitalsController.addOtherVitals(payload, user._id, response)
+    //     } 
+    // });
 };
 
 /**
@@ -114,7 +114,8 @@ dailyVitalsController.addBath= function (request, res) {
     )
     .exec()
     .then(function (bathUpdate) {
-        console.log('bathUpdate', bathUpdate)
+        console.log('bathUpdate', bathUpdate);
+        dailyVitalsController.lastUpdate(payload.userId, 'bath',  payload.isBathTaken);
         res.status(200).json({
             message: 'Added bath data successfully'
         });
@@ -158,7 +159,8 @@ dailyVitalsController.addFall = function (request, res) {
     )
     .exec()
     .then(function (fallUpdate) {
-        console.log('fallUpdate', fallUpdate)
+        console.log('fallUpdate', fallUpdate);
+        dailyVitalsController.lastUpdate(payload.userId, 'fall',  payload.number);
         res.status(200).json({
             message: 'Added fall data successfully'
         });
@@ -185,22 +187,7 @@ dailyVitalsController.addBloodPressure = function (request, res) {
             noteText: payload.noteText, 
             sysValue: payload.sysValue,
             diaValue: payload.diaValue,
-            bpmValue: payload.bpmValue,
-            sys:{ 
-                minimumValue: payload.sys.minimumValue,
-                maximumValue: payload.sys.maximumValue,
-                step: payload.sys.step
-            },
-            dia: { 
-                diaMinimumValue: payload.dia.diaMinimumValue,
-                diaMaximumValue: payload.dia.diaMaximumValue,
-                diaStep: payload.dia.diaStep
-            },
-            bpm: { 
-                bpmMinimumValue: payload.bpm.bpmMinimumValue,
-                bpmMaximumValue: payload.bpm.bpmMaximumValue,
-                bpmStep: payload.bpm.bpmStep
-            }
+            bpmValue: payload.bpmValue
         }
     };
 
@@ -218,7 +205,9 @@ dailyVitalsController.addBloodPressure = function (request, res) {
     )
     .exec()
     .then(function (bloodPressureUpdate) {
-        console.log('bloodPressureUpdate', bloodPressureUpdate)
+        console.log('bloodPressureUpdate', bloodPressureUpdate);
+        let value = payload.sysValue.toString() + '/' + payload.diaValue.toString();
+        dailyVitalsController.lastUpdate(payload.userId, 'bloodPressure',  value);
         res.status(200).json({
             message: 'Added blood pressure data successfully'
         });
@@ -242,11 +231,9 @@ dailyVitalsController.addMood =  function (request, res) {
                 hour:moment.utc(note_dateUTC,'HH'),
                 min:moment.utc(note_dateUTC,'mm')
             },
-            noteText: payload.noteText, 
-            isGood: payload.isGood,
-            isFatigued: payload.isFatigued,
-            isTired: payload.isTired,
-            isSick: payload.isSick
+            noteText: payload.noteText,
+            mood: payload.mood,
+            sliderValue: payload.sliderValue
         }
     };
 
@@ -264,7 +251,8 @@ dailyVitalsController.addMood =  function (request, res) {
     )
     .exec()
     .then(function (moodUpdate) {
-        console.log('moodUpdate', moodUpdate)
+        console.log('moodUpdate', moodUpdate);
+        dailyVitalsController.lastUpdate(payload.userId, 'mood',  payload.mood);
         res.status(200).json({
             message: 'Added mood data successfully'
         });
@@ -309,7 +297,12 @@ dailyVitalsController.addNutrition = function (request, res) {
     )
     .exec()
     .then(function (nutritionUpdate) {
-        console.log('nutritionDetail', nutritionUpdate)
+        console.log('nutritionDetail', nutritionUpdate);
+        let value = false;
+        if(payload.isBreakfastTaken ||  payload.isLunchTaken || isDinnerTaken) {
+            value = true;
+        }
+        dailyVitalsController.lastUpdate(payload.userId, 'nutrition',  value);
         res.status(200).json({
             message: 'Added nutrition data successfully'
         });
@@ -354,7 +347,8 @@ dailyVitalsController.addOtherVitals = function (request, res) {
     )
     .exec()
     .then(function (otherVitalUpdate) {
-        console.log('otherVitalUpdate', otherVitalUpdate)
+        console.log('otherVitalUpdate', otherVitalUpdate);
+        dailyVitalsController.lastUpdate(payload.userId, 'otherVitals',  payload.pulse);
         res.status(200).json({
             message: 'Added other vital data successfully'
         });
@@ -380,10 +374,7 @@ dailyVitalsController.addBowell = function (request, res) {
             },
             noteText: payload.noteText, 
             isAssistanceNeeded: payload.isAssistanceNeeded,
-            isNormal: payload.isNormal,
-            isAbdominalPain: payload.isAbdominalPain,
-            isConstipated: payload.isConstipated,
-            isAbdomialCramps: payload.isAbdomialCramps
+            bowell: payload.bowell
         }
     };
 
@@ -401,7 +392,8 @@ dailyVitalsController.addBowell = function (request, res) {
     )
     .exec()
     .then(function (update) {
-        console.log('bowell', update)
+        console.log('bowell', update);
+        dailyVitalsController.lastUpdate(payload.userId, 'bowell',  payload.bowell);
         res.status(200).json({
             message: 'Added other vital data successfully'
         });
@@ -449,7 +441,8 @@ dailyVitalsController.addCognitiveCare = function (request, res) {
     )
     .exec()
     .then(function (update) {
-        console.log('CognitiveCare', update)
+        console.log('CognitiveCare', update);
+        dailyVitalsController.lastUpdate(payload.userId, 'cognitiveCare',  payload.isPhoneSelected);
         res.status(200).json({
             message: 'Added other vital data successfully'
         });
@@ -493,7 +486,8 @@ dailyVitalsController.addDiabetic = function (request, res) {
     )
     .exec()
     .then(function (update) {
-        console.log('Diabetic', update)
+        console.log('Diabetic', update);
+        dailyVitalsController.lastUpdate(payload.userId, 'diabetic',  payload.bloodSugar);
         res.status(200).json({
             message: 'Added other vital data successfully'
         });
@@ -544,7 +538,8 @@ dailyVitalsController.addHygiene = function (request, res) {
     )
     .exec()
     .then(function (update) {
-        console.log('Hygiene', update)
+        console.log('Hygiene', update);
+        dailyVitalsController.lastUpdate(payload.userId, 'hygiene',  payload.isShowerTaken);
         res.status(200).json({
             message: 'Added other vital data successfully'
         });
@@ -595,7 +590,8 @@ dailyVitalsController.addPain = function (request, res) {
     )
     .exec()
     .then(function (update) {
-        console.log('Pain', update)
+        console.log('Pain', update);
+        dailyVitalsController.lastUpdate(payload.userId, 'pain',  payload.sliderValue);
         res.status(200).json({
             message: 'Added other vital data successfully'
         });
@@ -622,7 +618,7 @@ dailyVitalsController.addSleep = function (request, res) {
             },
             noteText: payload.noteText, 
             isNormal: payload.isNormal,
-            [key]: true
+            sleep: payload.sleep
         }
     };
 
@@ -641,7 +637,7 @@ dailyVitalsController.addSleep = function (request, res) {
     .exec()
     .then(function (update) {
         console.log('Sleep', update)
-        dailyVitalsController.lastUpdate(payload.userId, 'sleep',  payload.value);
+        dailyVitalsController.lastUpdate(payload.userId, 'sleep',  payload.sleep);
         res.status(200).json({
             message: 'Added other vital data successfully'
         });

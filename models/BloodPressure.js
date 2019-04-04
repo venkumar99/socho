@@ -33,41 +33,7 @@ var BloodPressureSchema = new mongoose.Schema({
         },
         bpmValue:{
             type: Number
-        },
-        sys:{ 
-            minimumValue: {
-                type: Number
-            },
-            maximumValue:{
-                type: Number
-            },
-            step: {
-                type: Number
-            }
-        },
-        dia: { 
-            diaMinimumValue: {
-                type: Number
-            },
-            diaMaximumValue: {
-                type: Number
-            },
-            diaStep: {
-                type: Number
-            }
-        },
-        bpm: { 
-            bpmMinimumValue: {
-                type: Number
-            },
-            bpmMaximumValue: {
-                type: Number
-            },
-            bpmStep: {
-                type: Number
-            }
-        },
-
+        }
     }]
 
 });

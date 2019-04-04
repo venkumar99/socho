@@ -25,18 +25,9 @@ var SleepSchema = new mongoose.Schema({
         noteText: {
             type: String
         }, 
-        isNormal: {
-            type: Boolean
+        sleep: {
+            type: String
         },
-        isDifficulty: {
-            type: Boolean
-        },
-        isFrequent: {
-            type: Boolean
-        },
-        isTired: {
-            type: Boolean
-        }
     }]
 
 });

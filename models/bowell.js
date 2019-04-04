@@ -28,17 +28,8 @@ var BowellSchema = new mongoose.Schema({
         isAssistanceNeeded: {
             type: Boolean
         },
-        isNormal: {
-            type: Boolean
-        },
-        isAbdominalPain: {
-            type: Boolean
-        },
-        isConstipated: {
-            type: Boolean
-        },
-        isAbdomialCramps: {
-            type: Boolean
+        bowell: {
+            type: String
         }
     }]
 
