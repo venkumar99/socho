@@ -35,7 +35,6 @@ var BloodPressureSchema = new mongoose.Schema({
             type: Number
         }
     }]
-
 });
 
 module.exports = mongoose.model('BloodPressure', BloodPressureSchema);
