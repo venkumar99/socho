@@ -36,6 +36,9 @@ var NutritionSchema = new mongoose.Schema({
         },
         isAssistanceNeeded: {
             type: Boolean
+        },
+        food: {
+            type: String
         }
     }]
 

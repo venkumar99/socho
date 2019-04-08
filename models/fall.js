@@ -25,10 +25,25 @@ var FallSchema = new mongoose.Schema({
         noteText: {
             type: String
         }, 
-        isFalls: {
+        number: {
+            type: Number
+        },
+        todayFalls: {
             type: Boolean
         },
-        number: {
+        todayWalk: {
+            type: Boolean
+        },
+        climbTrouble: {
+            type: Boolean
+        },
+        stepWalk: {
+            type: Number
+        },
+        climbed: {
+            type: Number
+        },
+        distance: {
             type: Number
         }
     }]

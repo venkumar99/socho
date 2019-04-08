@@ -30,9 +30,9 @@ var LastUpdateSchema = new mongoose.Schema({
             type: String,
             default: 'none'
         },
-        dibetic: {
-            type: String,
-            default: 'none'
+        diabetic: {
+            type: Number,
+            default: 0
         },
         hygiene: {
             type: String,
