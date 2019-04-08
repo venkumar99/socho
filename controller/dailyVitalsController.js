@@ -50,7 +50,7 @@ async function getDetail(modelName, id) {
 }
 
 /**
- * Get list of Consent
+ * @desc Get list of Consent
  * @param {Object} request 
  * @param {Object} response 
  */
@@ -79,21 +79,16 @@ dailyVitalsController.updateVitals = function(request, response) {
 };
 
 /**
- * Add Bath 
+ * @desc Add Bath 
  * @param {Object} payload 
  * @param {String} id 
  * @param {Object} res 
  */
 dailyVitalsController.addBath= function (request, res) {
     let payload = request.body;
-    var note_dateUTC = moment.utc().format('YYYY-MM-DD HH:mm:ss');
     let data =  {
         bathList: {
-            dateTime: {
-                date:note_dateUTC,
-                hour:moment.utc(note_dateUTC,'HH'),
-                min:moment.utc(note_dateUTC,'mm')
-            },
+            dateTime: dailyVitalsController.getDateTime(),
             noteText: payload.noteText, 
             isBathTaken: payload.isBathTaken,
             isAssistanceNeeded: payload.isAssistanceNeeded  
@@ -124,24 +119,24 @@ dailyVitalsController.addBath= function (request, res) {
 }
 
 /**
- * Add Fall
+ * @desc Add Fall
  * @param {Object} payload 
  * @param {String} id 
  * @param {Object} res 
  */
 dailyVitalsController.addFall = function (request, res) {
     let payload = request.body;
-    var note_dateUTC = moment.utc().format('YYYY-MM-DD HH:mm:ss');
     let data = {
         fallList: {
-            dateTime: {
-                date:note_dateUTC,
-                hour:moment.utc(note_dateUTC,'HH'),
-                min:moment.utc(note_dateUTC,'mm')
-            },
+            dateTime: dailyVitalsController.getDateTime(),
             noteText: payload.noteText, 
-            isFalls: payload.isFalls,
-            number: payload.number
+            number: payload.number,
+            todayFalls: payload.todayFalls,
+            todayWalk: payload.todayWalk,
+            climbTrouble: payload.climbTrouble,
+            stepWalk: payload.stepWalk,
+            climbed: payload.climbed,
+            distance: payload.distance
         }
     };
 
@@ -169,21 +164,16 @@ dailyVitalsController.addFall = function (request, res) {
 }
 
 /**
- * Add Blood Pressure 
+ * @desc Add Blood Pressure 
  * @param {Object} payload 
  * @param {String} id 
  * @param {Object} res 
  */
 dailyVitalsController.addBloodPressure = function (request, res) {
     let payload = request.body;
-    var note_dateUTC = moment.utc().format('YYYY-MM-DD HH:mm:ss');
     let data = {
         bloodPressureList: {
-            dateTime: {
-                date:note_dateUTC,
-                hour:moment.utc(note_dateUTC,'HH'),
-                min:moment.utc(note_dateUTC,'mm')
-            },
+            dateTime: dailyVitalsController.getDateTime(),
             noteText: payload.noteText, 
             sysValue: payload.sysValue,
             diaValue: payload.diaValue,
@@ -216,21 +206,16 @@ dailyVitalsController.addBloodPressure = function (request, res) {
 }
 
 /**
- * Add Mood 
+ * @desc Add Mood 
  * @param {Object} payload 
  * @param {String} id 
  * @param {Object} res 
  */
 dailyVitalsController.addMood =  function (request, res) {
     let payload = request.body;
-    var note_dateUTC = moment.utc().format('YYYY-MM-DD HH:mm:ss');
     let data = {
         moodList: {
-            dateTime: {
-                date:note_dateUTC,
-                hour:moment.utc(note_dateUTC,'HH'),
-                min:moment.utc(note_dateUTC,'mm')
-            },
+            dateTime: dailyVitalsController.getDateTime(),
             noteText: payload.noteText,
             mood: payload.mood,
             sliderValue: payload.sliderValue
@@ -260,26 +245,22 @@ dailyVitalsController.addMood =  function (request, res) {
 }
 
 /**
- * Add Nutrition
+ * @desc Add Nutrition
  * @param {Object} payload 
  * @param {String} id 
  * @param {Object} res 
  */
 dailyVitalsController.addNutrition = function (request, res) {
     let payload = request.body;
-    var note_dateUTC = moment.utc().format('YYYY-MM-DD HH:mm:ss');
     let data = {
         nutritionList: {
-            dateTime: {
-                date:note_dateUTC,
-                hour:moment.utc(note_dateUTC,'HH'),
-                min:moment.utc(note_dateUTC,'mm')
-            },
+            dateTime: dailyVitalsController.getDateTime(),
             noteText: payload.noteText, 
             isBreakfastTaken: payload.isBreakfastTaken,
             isLunchTaken: payload.isLunchTaken,
             isDinnerTaken: payload.isDinnerTaken,
-            isAssistanceNeeded: payload.isAssistanceNeeded
+            isAssistanceNeeded: payload.isAssistanceNeeded,
+            food: payload.food
         }
     };
 
@@ -311,21 +292,16 @@ dailyVitalsController.addNutrition = function (request, res) {
 }
 
 /**
- * Add Other Vitals 
+ * @desc Add Other Vitals 
  * @param {Object} payload 
  * @param {String} id 
  * @param {Object} res 
  */
 dailyVitalsController.addOtherVitals = function (request, res) {
     let payload = request.body;
-    var note_dateUTC = moment.utc().format('YYYY-MM-DD HH:mm:ss');
     let data = {
         otherVitalList: {
-            dateTime: {
-                date:note_dateUTC,
-                hour:moment.utc(note_dateUTC,'HH'),
-                min:moment.utc(note_dateUTC,'mm')
-            },
+            dateTime: dailyVitalsController.getDateTime(),
             noteText: payload.noteText, 
             temp: payload.temp,
             respiratory: payload.respiratory,
@@ -348,7 +324,7 @@ dailyVitalsController.addOtherVitals = function (request, res) {
     .exec()
     .then(function (otherVitalUpdate) {
         console.log('otherVitalUpdate', otherVitalUpdate);
-        dailyVitalsController.lastUpdate(payload.userId, 'otherVitals',  payload.pulse);
+        dailyVitalsController.lastUpdate(payload.userId, 'otherVital',  payload.pulse);
         res.status(200).json({
             message: 'Added other vital data successfully'
         });
@@ -357,21 +333,16 @@ dailyVitalsController.addOtherVitals = function (request, res) {
 }
 
 /**
- * Add Bowell 
+ * @desc Add Bowell 
  * @param {Object} payload 
  * @param {String} id 
  * @param {Object} res 
  */
 dailyVitalsController.addBowell = function (request, res) {
     let payload = request.body;
-    var note_dateUTC = moment.utc().format('YYYY-MM-DD HH:mm:ss');
     let data = {
         bowellList: {
-            dateTime: {
-                date:note_dateUTC,
-                hour:moment.utc(note_dateUTC,'HH'),
-                min:moment.utc(note_dateUTC,'mm')
-            },
+            dateTime: dailyVitalsController.getDateTime(),
             noteText: payload.noteText, 
             isAssistanceNeeded: payload.isAssistanceNeeded,
             bowell: payload.bowell
@@ -402,21 +373,16 @@ dailyVitalsController.addBowell = function (request, res) {
 }
 
 /**
- * Add CognitiveCare 
+ * @desc Add CognitiveCare 
  * @param {Object} payload 
  * @param {String} id 
  * @param {Object} res 
  */
 dailyVitalsController.addCognitiveCare = function (request, res) {
     let payload = request.body;
-    var note_dateUTC = moment.utc().format('YYYY-MM-DD HH:mm:ss');
     let data = {
         congnitiveCareList: {
-            dateTime: {
-                date:note_dateUTC,
-                hour:moment.utc(note_dateUTC,'HH'),
-                min:moment.utc(note_dateUTC,'mm')
-            },
+            dateTime: dailyVitalsController.getDateTime(),
             noteText: payload.noteText, 
             isAssistanceNeeded: payload.isAssistanceNeeded,
             isPhoneSelected: payload.isPhoneSelected,
@@ -442,7 +408,7 @@ dailyVitalsController.addCognitiveCare = function (request, res) {
     .exec()
     .then(function (update) {
         console.log('CognitiveCare', update);
-        dailyVitalsController.lastUpdate(payload.userId, 'cognitiveCare',  payload.isPhoneSelected);
+        dailyVitalsController.lastUpdate(payload.userId, 'congnitive',  payload.isPhoneSelected);
         res.status(200).json({
             message: 'Added other vital data successfully'
         });
@@ -451,21 +417,16 @@ dailyVitalsController.addCognitiveCare = function (request, res) {
 }
 
 /**
- * Add Diabetic 
+ * @desc Add Diabetic 
  * @param {Object} payload 
  * @param {String} id 
  * @param {Object} res 
  */
 dailyVitalsController.addDiabetic = function (request, res) {
     let payload = request.body;
-    var note_dateUTC = moment.utc().format('YYYY-MM-DD HH:mm:ss');
     let data = {
         diabeticList: {
-            dateTime: {
-                date:note_dateUTC,
-                hour:moment.utc(note_dateUTC,'HH'),
-                min:moment.utc(note_dateUTC,'mm')
-            },
+            dateTime: dailyVitalsController.getDateTime(),
             noteText: payload.noteText, 
             isAssistanceNeeded: payload.isAssistanceNeeded,
             bloodSugar: payload.bloodSugar
@@ -496,21 +457,16 @@ dailyVitalsController.addDiabetic = function (request, res) {
 }
 
 /**
- * Add Hygiene 
+ * @desc Add Hygiene 
  * @param {Object} payload 
  * @param {String} id 
  * @param {Object} res 
  */
 dailyVitalsController.addHygiene = function (request, res) {
     let payload = request.body;
-    var note_dateUTC = moment.utc().format('YYYY-MM-DD HH:mm:ss');
     let data = {
         hygieneList: {
-            dateTime: {
-                date:note_dateUTC,
-                hour:moment.utc(note_dateUTC,'HH'),
-                min:moment.utc(note_dateUTC,'mm')
-            },
+            dateTime: dailyVitalsController.getDateTime(),
             noteText: payload.noteText, 
             isAssistanceNeeded: payload.isAssistanceNeeded,
             isShowerTaken: payload.isShowerTaken,
@@ -548,21 +504,16 @@ dailyVitalsController.addHygiene = function (request, res) {
 }
 
 /**
- * Add Pain 
+ * @desc Add Pain 
  * @param {Object} payload 
  * @param {String} id 
  * @param {Object} res 
  */
 dailyVitalsController.addPain = function (request, res) {
     let payload = request.body;
-    var note_dateUTC = moment.utc().format('YYYY-MM-DD HH:mm:ss');
     let data = {
         painList: {
-            dateTime: {
-                date:note_dateUTC,
-                hour:moment.utc(note_dateUTC,'HH'),
-                min:moment.utc(note_dateUTC,'mm')
-            },
+            dateTime: dailyVitalsController.getDateTime(),
             noteText: payload.noteText, 
             isAssistanceNeeded: payload.isAssistanceNeeded,
             sliderValue: payload.sliderValue,
@@ -600,7 +551,7 @@ dailyVitalsController.addPain = function (request, res) {
 }
 
 /**
- * Add Sleep 
+ * @desc Add Sleep 
  * @param {Object} payload 
  * @param {String} id 
  * @param {Object} res 
@@ -608,14 +559,9 @@ dailyVitalsController.addPain = function (request, res) {
 dailyVitalsController.addSleep = function (request, res) {
     let payload = request.body;
     let key = payload.value;
-    var note_dateUTC = moment.utc().format('YYYY-MM-DD HH:mm:ss');
     let data = {
         sleepList: {
-            dateTime: {
-                date:note_dateUTC,
-                hour:moment.utc(note_dateUTC,'HH'),
-                min:moment.utc(note_dateUTC,'mm')
-            },
+            dateTime: dailyVitalsController.getDateTime(),
             noteText: payload.noteText, 
             isNormal: payload.isNormal,
             sleep: payload.sleep
@@ -646,7 +592,7 @@ dailyVitalsController.addSleep = function (request, res) {
 }
 
 /**
- * Add Sleep 
+ * @desc update table with last change 
  * @param {Object} payload 
  * @param {String} id 
  * @param {Object} res 
@@ -654,50 +600,57 @@ dailyVitalsController.addSleep = function (request, res) {
 dailyVitalsController.lastUpdate = function (userId, key, value) {
     //let payload = request.body;
 
-    LastUpdate.findOne({
-        userObjectId: userId
-    })
+    LastUpdate.findOne(
+        { userObjectId: userId}
+    )
     .exec()
-    .then(function (data) { 
-        console.log('last update data', data);
-        // var note_dateUTC = moment.utc().format('YYYY-MM-DD HH:mm:ss');
-        // let data = {
-        //     lastUpdateList: {
-        //         dateTime: {
-        //             date:note_dateUTC,
-        //             hour:moment.utc(note_dateUTC,'HH'),
-        //             min:moment.utc(note_dateUTC,'mm')
-        //         },
-        //         noteText: payload.noteText, 
-        //         isNormal: payload.isNormal,
-        //         isDifficulty: payload.isDifficulty,
-        //         isFrequent: payload.isFrequent,
-        //         isTired: payload.isTired
-        //     }
-        // };
+    .then(function (data) {
+        let lastUpdateData = {};
+        lastUpdateData = data.lastUpdateList[data.lastUpdateList.length - 1];
+        if(lastUpdateData) {
+            lastUpdateData.dateTime = dailyVitalsController.getDateTime();
+            lastUpdateData[key] = value;     
+        } else {
+            lastUpdateData = {
+                dateTime: dailyVitalsController.getDateTime(),
+                [key]: value              
+            }
+        }
 
-        // LastUpdate.findOneAndUpdate(
-        //     {   
-        //         userObjectId: payload.userId
-        //     },
-        //     {
-        //         $push: data
-        //     },
-        //     {
-        //         safe:true,
-        //         upsert:true
-        //     }
-        // )
-        // .exec()
-        // .then(function (update) {
-        //     console.log('Sleep', update)
-        //     res.status(200).json({
-        //         message: 'Added other vital data successfully'
-        //     });
-            
-        // });
+        let updateData = {
+            lastUpdateList: lastUpdateData
+        }
+
+        LastUpdate.findOneAndUpdate(
+            {   
+                userObjectId: userId
+            },
+            {
+                $push: updateData
+            },
+            {
+                safe:true,
+                upsert:true
+            }
+        )
+        .exec()
+        .then(function (update) {
+            console.log('last update', update)   
+        });
 
     });
+}
+
+/**
+ * @desc return current data and time 
+ */
+dailyVitalsController.getDateTime = function () { 
+    var note_dateUTC = moment.utc().format('YYYY-MM-DD HH:mm:ss');
+    return {
+        date:note_dateUTC,
+        hour:moment.utc(note_dateUTC,'HH'),
+        min:moment.utc(note_dateUTC,'mm')
+    }
 }
 
 module.exports = dailyVitalsController;

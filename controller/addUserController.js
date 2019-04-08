@@ -193,7 +193,7 @@ addUserController.emailSender= function(req, res, userInfo) {
  * @param {Object} res 
  */
 addUserController.getListOfAccount= function(req, res) {
-    console.log("User Email : ",req.query.userId);
+    //console.log("User Email : ",req.query.userId);
     User.findOne({
         userid: req.query.userId
     })
