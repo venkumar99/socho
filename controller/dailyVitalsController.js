@@ -50,35 +50,6 @@ async function getDetail(modelName, id) {
 }
 
 /**
- * @desc Get list of Consent
- * @param {Object} request 
- * @param {Object} response 
- */
-dailyVitalsController.updateVitals = function(request, response) {
-    // let payload = request.body;
-
-    // User.findOne({
-    //     userid: payload.userId
-    // })
-    // .exec()
-    // .then(function (user) { 
-    //     if(payload.id === 'Bath') {
-    //         dailyVitalsController.addBath(payload, user._id, response);           
-    //     } else if (payload.id === 'Fall') {
-    //         dailyVitalsController.addFall(payload, user._id, response)
-    //     } else if (payload.id === 'BloodPressure') {
-    //         dailyVitalsController.addBloodPressure(payload, user._id, response)
-    //     } else if (payload.id === 'Mood') {
-    //         dailyVitalsController.addMood(payload, user._id, response)
-    //     } else if (payload.id === 'Nutrition') {
-    //         dailyVitalsController.addNutrition(payload, user._id, response)
-    //     } else if (payload.id === 'OtherVitals') {
-    //         dailyVitalsController.addOtherVitals(payload, user._id, response)
-    //     } 
-    // });
-};
-
-/**
  * @desc Add Bath 
  * @param {Object} payload 
  * @param {String} id 
