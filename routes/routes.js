@@ -16,7 +16,9 @@ import consentController from '../controller/consentController';
 import schedularController from '../controller/schedularController';
 
 import policyController from '../controller/policyController';
+
 import dailyVaitalsController from '../controller/dailyVitalsController';
+import getDailyVitalsController from '../controller/getDailyVitalsController';
 
 
 
@@ -106,6 +108,8 @@ routes.post('/diabetic', dailyVaitalsController.addDiabetic);
 routes.post('/hygiene', dailyVaitalsController.addHygiene);
 routes.post('/pain', dailyVaitalsController.addPain);
 routes.post('/sleep', dailyVaitalsController.addSleep);
+
+routes.get('/getDailyVital', getDailyVitalsController.getLastUpdate);
 
 
 module.exports = routes;

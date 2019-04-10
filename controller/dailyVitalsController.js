@@ -569,11 +569,10 @@ dailyVitalsController.addSleep = function (request, res) {
  * @param {Object} res 
  */
 dailyVitalsController.lastUpdate = function (userId, key, value) {
-    //let payload = request.body;
 
-    LastUpdate.findOne(
-        { userObjectId: userId}
-    )
+    LastUpdate.findOne({ 
+        userObjectId: userId 
+    })
     .exec()
     .then(function (data) {
         let lastUpdateData = {};
