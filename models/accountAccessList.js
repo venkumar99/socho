@@ -9,38 +9,39 @@ var AccountAccessListSchema = new mongoose.Schema({
         ref: 'User',
         required: true,
     },
-    accountAccessList: [{
-        dateTime: {
-            date:{
-                type:Date,
+    accountAccessList: [
+        {
+            dateTime: {
+                date:{
+                    type:Date,
+                },
+                hour:{
+                    type: Number,
+                },
+                min:{
+                    type: Number,
+                }
             },
-            hour:{
-                type: Number,
+            email: {
+                type: String
             },
-            min:{
-                type: Number,
+            requestStatus: {
+                type: String
+            },
+            userId : {
+                type: String
+            },
+            fullName: {
+                type: String
+            },
+            authorizedLevel:{
+                type: String
+            },
+            relationShip: {
+                type: String
             }
-        },
-        email: {
-            type: String
-        },
-        requestStatus: {
-            type: String
-        },
-        userId : {
-            type: String
-        },
-        fullName: {
-            type: String
-        },
-        authorizedLevel:{
-            type: String
-        },
-        relationShip: {
-            type: String
         }
-
-    }]
+    ]
 });
 
 module.exports = mongoose.model('AccountAccessList', AccountAccessListSchema);

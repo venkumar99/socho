@@ -75,7 +75,7 @@ routes.post('/addUser', addUserController.addUser);
 routes.get('/conformation/:token', addUserController.validateEmail);
 routes.get('/conformation/:token/:response', addUserController.emailResponse);
 routes.post('/account', addUserController.getAccountDetail);
-routes.get('/accountList', addUserController.getListOfAccount);
+routes.get('/accountList', addUserController.getApprovedAccounts);
 
 
 routes.get('/graphs', addUserController.graphs);

@@ -82,7 +82,8 @@ addUserController.validateEmail = function(req, res) {
         const tokenVerify = jwt.verify(req.params.token, CONFIG.jwt_secret_key);
         res.sendfile(path.join('./public/emailVerify.html'));
     } catch(e) {
-        console.log('error', e)
+        //res.sendfile(path.join('./public/emailVerify.html')); //need to be fixed
+        console.log('error expried', e)
     }
 };
 
@@ -135,11 +136,11 @@ addUserController.getAccountlist= function(id, res ) {
                 console.log('Error getting list of Chat', err);
                 res.status(401).json({error: 'Account Not found'})
             } else {
-                if(accounts){
-                res.status(200).json({accountList: accounts.accountAccessList}) 
-                } else {
-                    console.log("there is no account");
-                }         
+                var accountList = [];
+                if(accounts) {
+                    accountList =  accounts.accountAccessList
+                }          
+                res.status(200).json({accountList: accountList})        
             }
         });
     });
@@ -165,15 +166,15 @@ addUserController.emailSender= function(req, res, userInfo) {
     sgMail.setApiKey(CONFIG.email_api_key);
 
     const msg = {
-    to: userInfo.email,
-    from: CONFIG.email_username,
-    subject: 'Confirmation',
-    text: 'and easy to do anywhere, even with Node.js',
-    html: `<b>${userInfo.fullName} want to get access to your account.</b>
-            </br> 
-            <p>To give access please click to this link: </br>
-            http://35.237.139.25:3000/api/conformation/${emailToken}
-            </p>` // html body,
+        to: userInfo.email,
+        from: CONFIG.email_username,
+        subject: 'Confirmation',
+        text: 'and easy to do anywhere, even with Node.js',
+        html: `<b>${userInfo.fullName} want to get access to your account.</b>
+                </br> 
+                <p>To give access please click to this link: </br>
+                http://35.237.139.25:3000/api/conformation/${emailToken}
+                </p>` // html body,
     };
 
     sgMail.send(msg, (error, result) => {
@@ -181,7 +182,7 @@ addUserController.emailSender= function(req, res, userInfo) {
         console.log("Error while sending email", error)
         }
         else {
-        console.log("Email was send ", result)
+        console.log("Email was send ");
         res.status(200).json({successMessageId: '123445' });
         }
     });
@@ -192,8 +193,7 @@ addUserController.emailSender= function(req, res, userInfo) {
  * @param {Object} req 
  * @param {Object} res 
  */
-addUserController.getListOfAccount= function(req, res) {
-    //console.log("User Email : ",req.query.userId);
+addUserController.getApprovedAccounts= function(req, res) {
     User.findOne({
         userid: req.query.userId
     })
@@ -207,8 +207,15 @@ addUserController.getListOfAccount= function(req, res) {
                 console.log("Error ", err);
             } else {
                 if(accounts) {
-                    //console.log('User List', accounts)
-                    res.status(200).json({accountList: accounts.accountList}) 
+                    let accountListData;
+                    if(accounts.accountList) {                   
+                        let userDetail = [{
+                            fullName: user.firstName + ' ' + user.lastName
+                        }];
+                        accountListData = userDetail.concat(accounts.accountList);
+                    }
+                    console.log("accountListData ", accountListData);
+                    res.status(200).json({accountList: accountListData}) 
                 } else {
                     res.status(204).json({accountList:[]});
                 }
@@ -230,11 +237,18 @@ addUserController.updateAccount = function(userDetail, res) {
     })
     .exec()
     .then(function (user) { 
-        AccountAccessList.findOne({
-            userObjectId: user._id 
-        })
-        .exec()
+        AccountAccessList.findOneAndUpdate(
+            {
+                userObjectId: user._id,
+                "accountAccessList.email": userDetail.emailSend
+            },
+            {
+                $set: { "accountAccessList.$.requestStatus" : "Success" } 
+            },
+            { new: true }
+        )
         .then(function (accountDetail) {
+            console.log('accountDetail', accountDetail);
             var account = accountDetail.accountAccessList.find(function(item){
                 if(item.email === userDetail.emailSend) {
                     return item;
@@ -243,18 +257,7 @@ addUserController.updateAccount = function(userDetail, res) {
 
             if(account) {
                 let accountInfo = {
-                    accountList: {
-                        dateTime: {
-                            date:note_dateUTC,
-                            hour:moment.utc(note_dateUTC,'HH'),
-                            min:moment.utc(note_dateUTC,'mm')
-                        },
-                        email: account.email,
-                        userId : account.userId,
-                        fullName: account.fullName,
-                        authorizedLevel: account.authorizedLevel,
-                        relationShip: account.relationShip  
-                    }     
+                    accountList: account    
                 };
 
                 AccountList.findOneAndUpdate(            
