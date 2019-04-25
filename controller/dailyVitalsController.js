@@ -576,7 +576,9 @@ dailyVitalsController.lastUpdate = function (userId, key, value) {
     .exec()
     .then(function (data) {
         let lastUpdateData = {};
-        lastUpdateData = data.lastUpdateList[data.lastUpdateList.length - 1];
+        if(data && data.lastUpdateList) {
+            lastUpdateData = data.lastUpdateList[data.lastUpdateList.length - 1];
+        }     
         if(lastUpdateData) {
             lastUpdateData.dateTime = dailyVitalsController.getDateTime();
             lastUpdateData[key] = value;     
@@ -590,7 +592,7 @@ dailyVitalsController.lastUpdate = function (userId, key, value) {
         let updateData = {
             lastUpdateList: lastUpdateData
         }
-
+        console.log('updateData data', updateData);
         LastUpdate.findOneAndUpdate(
             {   
                 userObjectId: userId
@@ -600,7 +602,8 @@ dailyVitalsController.lastUpdate = function (userId, key, value) {
             },
             {
                 safe:true,
-                upsert:true
+                upsert:true,
+                new: true
             }
         )
         .exec()
