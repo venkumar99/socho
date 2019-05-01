@@ -12,7 +12,7 @@ getDailyVitalsController.getLastUpdate= function (req, res) {
     })
     .exec()
     .then(function (data) { 
-        if(data) {
+        if(data  && data.lastUpdateList) {          
             res.status(200).json({
                 lastUpdated: data.lastUpdateList[data.lastUpdateList.length - 1]
             });
