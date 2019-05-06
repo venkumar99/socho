@@ -14,6 +14,7 @@ import userHealthProfileController from '../controller/userHealthProfileControll
 import addUserController from '../controller/addUserController';
 import consentController from '../controller/consentController';
 import schedularController from '../controller/schedularController';
+import emailController from '../controller/emailController'
 
 import policyController from '../controller/policyController';
 
@@ -72,7 +73,7 @@ routes.post('/careNote',authController.isAuthenticated, careNoteController.addNo
 
 //Routes for add new user
 routes.post('/addUser', addUserController.addUser);
-routes.get('/conformation/:token', addUserController.validateEmail);
+routes.get('/conformation/:token', emailController.validateEmail);
 routes.get('/conformation/:token/:response', addUserController.emailResponse);
 routes.post('/account', addUserController.getAccountDetail);
 routes.get('/accountList', addUserController.getApprovedAccounts);
