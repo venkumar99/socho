@@ -93,7 +93,7 @@ addUserController.emailResponse = function(req, res) {
             const tokenVerified = jwt.verify(req.params.token, CONFIG.jwt_secret_key);
             if(tokenVerified) {
                 console.log(tokenVerified);
-                addUserController.updateAccount1(tokenVerified, res);
+                addUserController.updateAccount(tokenVerified, res);
             }
         } else {
             res.status(200).json('<h3>Thank you for decline</h3>');
@@ -174,7 +174,7 @@ addUserController.getApprovedAccounts= function(req, res) {
  * @param {Object} req 
  * @param {Object} res 
  */
-addUserController.updateAccount1 = function(userDetail, res) {
+addUserController.updateAccount = function(userDetail, res) {
     var note_dateUTC = moment.utc().format('YYYY-MM-DD HH:mm:ss');
 
     AccountAccessList.findOneAndUpdate(

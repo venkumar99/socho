@@ -23,8 +23,10 @@ consentController.getConsentList = function(request, response) {
         .exec()
         .then(function (constents) { 
             if(constents) {
-                console.log('consent ', constents)
-                response.status(200).json(constents);
+                console.log('consent ', constents);
+                response.status(200).json({
+                    constent: constents.consentList[constents.consentList.length -1]
+                });
             } else {
                 response.status(204).json({error: 'No Consent'});
             }
@@ -37,64 +39,43 @@ consentController.getConsentList = function(request, response) {
  * @param {Object} request 
  * @param {Object} response 
  */
-consentController.addConsent = function(constentDetail) {
-    var note_dateUTC = moment.utc().format('YYYY-MM-DD HH:mm:ss');
+consentController.addConsent = function(constentDetail) {  
+    var dateTime = consentController.getDateTime();
     var constentData = {
-        consentList: {
-            dateTime: {
-                date:note_dateUTC,
-                hour:moment.utc(note_dateUTC,'HH'),
-                min:moment.utc(note_dateUTC,'mm')
-            },
+        userList: {
+            dateTime: dateTime,
             name:constentDetail.name,
             email: constentDetail.accountEmail,
-            allInformation: {
-                dateTime: {
-                    date:note_dateUTC,
-                    hour:moment.utc(note_dateUTC,'HH'),
-                    min:moment.utc(note_dateUTC,'mm')
+            id: constentDetail.accountEmail,        
+            consentList: [{
+                dateTime: dateTime,
+                allInformation: {
+                    dateTime: dateTime,
+                    value: false
                 },
-                value: false
-            },
-            dailyVitals: {
-                dateTime: {
-                    date:note_dateUTC,
-                    hour:moment.utc(note_dateUTC,'HH'),
-                    min:moment.utc(note_dateUTC,'mm')
+                dailyVitals: {
+                    dateTime: dateTime,
+                    value: false
                 },
-                value: false
-            },
-            homeCareNotes: {
-                dateTime: {
-                    date:note_dateUTC,
-                    hour:moment.utc(note_dateUTC,'HH'),
-                    min:moment.utc(note_dateUTC,'mm')
+                homeCareNotes: {
+                    dateTime: dateTime,
+                    value: false
                 },
-                value: false
-            },
-            medicalRecords: {
-                dateTime: {
-                    date:note_dateUTC,
-                    hour:moment.utc(note_dateUTC,'HH'),
-                    min:moment.utc(note_dateUTC,'mm')
+                medicalRecords: {
+                    dateTime: dateTime,
+                    value: false
                 },
-                value: false
-            },
-            medication: {
-                dateTime: {
-                    date:note_dateUTC,
-                    hour:moment.utc(note_dateUTC,'HH'),
-                    min:moment.utc(note_dateUTC,'mm')
-                },
-                value: false
-            },
+                medication: {
+                    dateTime: dateTime,
+                    value: false
+                }
+            }]
         }
     };
-
     //Adding account detail to AccountList
     Consent.findOneAndUpdate( 
         {
-            userObjectId: constentDetail.userId,
+            //userObjectId: constentDetail.userId,
             userEmail: constentDetail.userEmail
         },
         {
@@ -118,18 +99,14 @@ consentController.addConsent = function(constentDetail) {
  */
 consentController.updateConsent = function(request, response) {
     var note_dateUTC = moment.utc().format('YYYY-MM-DD HH:mm:ss');
-    var dateTime= {
-                    date:note_dateUTC,
-                    hour:moment.utc(note_dateUTC,'HH'),
-                    min:moment.utc(note_dateUTC,'mm')
-                }
+    var dateTime=  consentController.getDateTime();
 
     let accountDetail = request.body.record;
     console.log('updateConsent: ', accountDetail, accountDetail.recordId);
     let element = accountDetail.recordName;
 
     Consent.findOne(           
-        //{userObjectId: accountDetail.userObjectId  },
+        {userObjectId: accountDetail.userObjectId  },
         {'consentList._id': accountDetail.recordId  },
     )
     .exec()
@@ -191,6 +168,18 @@ consentController.updateConsent = function(request, response) {
  */
 consentController.deleteConsent = function(request, response) {
 
+}
+
+/**
+ * @desc return current data and time 
+ */
+consentController.getDateTime = function () { 
+    var note_dateUTC = moment.utc().format('YYYY-MM-DD HH:mm:ss');
+    return {
+        date:note_dateUTC,
+        hour:moment.utc(note_dateUTC,'HH'),
+        min:moment.utc(note_dateUTC,'mm')
+    }
 }
 
 module.exports = consentController;

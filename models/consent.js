@@ -3,6 +3,18 @@ import mongoose, {
     SchemaType
 } from 'mongoose';
 
+var dateTime = {
+    date:{
+        type:Date,
+    },
+    hour:{
+        type: Number,
+    },
+    min:{
+        type: Number,
+    }
+};
+
 var ConsentSchema = new mongoose.Schema({
     userObjectId: {
         type: SchemaTypes.ObjectId,
@@ -12,17 +24,10 @@ var ConsentSchema = new mongoose.Schema({
     userEmail:{
         type:String
     },
-    consentList: [{
-        dateTime: {
-            date:{
-                type:Date,
-            },
-            hour:{
-                type: Number,
-            },
-            min:{
-                type: Number,
-            }
+    userList:[{
+        dateTime: dateTime,
+        id: {
+            type: String
         },
         email:{
             type: String
@@ -30,88 +35,40 @@ var ConsentSchema = new mongoose.Schema({
         name:{
             type: String
         },
-        allInformation: {
-            dateTime: {
-                date:{
-                    type:Date,
-                },
-                hour:{
-                    type: Number,
-                },
-                min:{
-                    type: Number,
+        consentList: [{
+            dateTime: dateTime,
+            allInformation: {
+                dateTime: dateTime,
+                value: {
+                    type: Boolean
                 }
             },
-            value: {
-                type: Boolean
-            }
-        },
-        dailyVitals: {
-            dateTime: {
-                date:{
-                    type:Date,
-                },
-                hour:{
-                    type: Number,
-                },
-                min:{
-                    type: Number,
+            dailyVitals: {
+                dateTime: dateTime,
+                value: {
+                    type: Boolean
                 }
             },
-            value: {
-                type: Boolean
-            }
-        },
-        homeCareNotes: {
-            dateTime: {
-                date:{
-                    type:Date,
-                },
-                hour:{
-                    type: Number,
-                },
-                min:{
-                    type: Number,
+            homeCareNotes: {
+                dateTime: dateTime,
+                value: {
+                    type: Boolean
                 }
             },
-            value: {
-                type: Boolean
-            }
-        },
-        medicalRecords: {
-            dateTime: {
-                date:{
-                    type:Date,
-                },
-                hour:{
-                    type: Number,
-                },
-                min:{
-                    type: Number,
+            medicalRecords: {
+                dateTime: dateTime,
+                value: {
+                    type: Boolean
                 }
             },
-            value: {
-                type: Boolean
-            }
-        },
-        medication: {
-            dateTime: {
-                date:{
-                    type:Date,
-                },
-                hour:{
-                    type: Number,
-                },
-                min:{
-                    type: Number,
+            medication: {
+                dateTime: dateTime,
+                value: {
+                    type: Boolean
                 }
-            },
-            value: {
-                type: Boolean
             }
-        },
-
-    }]
+        }]
+    }]   
 });
 
 module.exports = mongoose.model('Consent', ConsentSchema);
