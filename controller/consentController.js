@@ -12,25 +12,29 @@ var consentController = {};
  * @param {Object} response 
  */
 consentController.getConsentList = function(request, response) {
-    User.findOne({
-        userid: request.query.userId
+    Consent.findOne({
+        userEmail: request.query.userId  
     })
     .exec()
-    .then(function (user) { 
-        Consent.findOne({
-            userObjectId: user._id  
-        })
-        .exec()
-        .then(function (constents) { 
-            if(constents) {
-                console.log('consent ', constents);
-                response.status(200).json({
-                    constent: constents.consentList[constents.consentList.length -1]
-                });
-            } else {
-                response.status(204).json({error: 'No Consent'});
-            }
-        });
+    .then(function (constents) {
+        if(constents) { 
+            let constentList = [];
+            constents.userList.forEach(element => {
+                let data = {
+                    name: element.name,
+                    email: element.email,
+                    id: element.id,
+                    consentList: element.consentList[element.consentList.length - 1] 
+                } 
+                constentList.push(data); 
+            });
+            console.log('consent ', constentList);           
+            response.status(200).json({
+                constentList: constentList
+            });
+        } else {
+            response.status(204).json({error: 'No Consent'});
+        }
     });
 };
 
