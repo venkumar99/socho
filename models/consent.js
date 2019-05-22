@@ -21,9 +21,6 @@ var ConsentSchema = new mongoose.Schema({
         ref: 'User',
         required: true,
     },
-    userEmail:{
-        type:String
-    },
     userList:[{
         dateTime: dateTime,
         id: {

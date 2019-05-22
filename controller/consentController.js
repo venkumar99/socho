@@ -13,7 +13,7 @@ var consentController = {};
  */
 consentController.getConsentList = function(request, response) {
     Consent.findOne({
-        userEmail: request.query.userId  
+        userObjectId: request.query.userId  
     })
     .exec()
     .then(function (constents) {
@@ -24,7 +24,7 @@ consentController.getConsentList = function(request, response) {
                     name: element.name,
                     email: element.email,
                     id: element.id,
-                    consentList: element.consentList[element.consentList.length - 1] 
+                    consentList: element.consentList[element.consentList.length - 1]
                 } 
                 constentList.push(data); 
             });
@@ -79,8 +79,7 @@ consentController.addConsent = function(constentDetail) {
     //Adding account detail to AccountList
     Consent.findOneAndUpdate( 
         {
-            //userObjectId: constentDetail.userId,
-            userEmail: constentDetail.userEmail
+            userObjectId: constentDetail.userObjectId,
         },
         {
             $push: constentData
@@ -104,63 +103,74 @@ consentController.addConsent = function(constentDetail) {
 consentController.updateConsent = function(request, response) {
     var note_dateUTC = moment.utc().format('YYYY-MM-DD HH:mm:ss');
     var dateTime=  consentController.getDateTime();
-
     let accountDetail = request.body.record;
-    console.log('updateConsent: ', accountDetail, accountDetail.recordId);
-    let element = accountDetail.recordName;
-
-    Consent.findOne(           
-        {userObjectId: accountDetail.userObjectId  },
-        {'consentList._id': accountDetail.recordId  },
+    let consentKeyValue = "userList.0.consentList.0." + [accountDetail.recordName] + ".value";
+    let consentKeyData = "userList.0.consentList.0." + [accountDetail.recordName] + ".dateTime";
+    let updateData = {
+        [consentKeyData]: dateTime,
+        [consentKeyValue]: accountDetail.value
+    }
+    Consent.updateOne(           
+        {
+            userObjectId: accountDetail.userObjectId,
+            'userList.id': accountDetail.recordId
+        },
+        {
+            $set: updateData
+        },
+        { 
+            new: true 
+        }
     )
     .exec()
     .then(function (consents) { 
-        let consentData = consents.consentList[consents.consentList.length - 1];
-        if(consentData) {
-            consentData.dateTime = dateTime;
-            if('allInformation' === accountDetail.recordName) {
-                consentData.allInformation.dateTime = dateTime;
-                consentData.allInformation.value = accountDetail.value;
-            } else if ('dailyVitals' === accountDetail.recordName) {
-                consentData.dailyVitals.dateTime = dateTime;
-                consentData.dailyVitals.value = accountDetail.value;
-            } else if ('homeCareNotes' === accountDetail.recordName) {
-                consentData.homeCareNotes.dateTime = dateTime;
-                consentData.homeCareNotes.value = accountDetail.value;
-            } else if ('medicalRecords' === accountDetail.recordName) {
-                consentData.medicalRecords.dateTime = dateTime;
-                consentData.medicalRecords.value = accountDetail.value;
-            } else if ('medication' === accountDetail.recordName) {
-                consentData.medication.dateTime = dateTime;
-                consentData.medication.value = accountDetail.value;
-            } 
+        console.log('constent1', consents);
+       // let consentData = consents.userList.consentList[consents.userList.consentList.length - 1];
+        // if(consentData) {
+        //     consentData.dateTime = dateTime;
+        //     if('allInformation' === accountDetail.recordName) {
+        //         consentData.allInformation.dateTime = dateTime;
+        //         consentData.allInformation.value = accountDetail.value;
+        //     } else if ('dailyVitals' === accountDetail.recordName) {
+        //         consentData.dailyVitals.dateTime = dateTime;
+        //         consentData.dailyVitals.value = accountDetail.value;
+        //     } else if ('homeCareNotes' === accountDetail.recordName) {
+        //         consentData.homeCareNotes.dateTime = dateTime;
+        //         consentData.homeCareNotes.value = accountDetail.value;
+        //     } else if ('medicalRecords' === accountDetail.recordName) {
+        //         consentData.medicalRecords.dateTime = dateTime;
+        //         consentData.medicalRecords.value = accountDetail.value;
+        //     } else if ('medication' === accountDetail.recordName) {
+        //         consentData.medication.dateTime = dateTime;
+        //         consentData.medication.value = accountDetail.value;
+        //     } 
 
-            let updatedConsent = {
-                consentList: consentData
-            };
-                console.log("update : ",  consentData);
+        //     let updatedConsent = {
+        //         consentList: consentData
+        //     };
+        //         console.log("update : ",  consentData);
 
-                Consent.findOneAndUpdate( 
-                    {
-                        userEmail: consents.userEmail
-                    },
-                    {
-                        $push: updatedConsent
-                    },
-                    {
-                        safe:true,
-                        upsert:true
-                    }
-                )
-                .exec()
-                .then(function (constentAdd) { 
-                    console.log("New Constent Added")
-                    console.log('consent1: ', consents)
-                    response.status(200).json({
-                        constentList: consents
-                    });
-                });
-        }
+        //         Consent.findOneAndUpdate( 
+        //             {
+        //                 userEmail: consents.userEmail
+        //             },
+        //             {
+        //                 $push: updatedConsent
+        //             },
+        //             {
+        //                 safe:true,
+        //                 upsert:true
+        //             }
+        //         )
+        //         .exec()
+        //         .then(function (constentAdd) { 
+        //             console.log("New Constent Added")
+        //             console.log('consent1: ', consents)
+        //             response.status(200).json({
+        //                 constentList: consents
+        //             });
+        //         });
+        // }
     });
    
 }
