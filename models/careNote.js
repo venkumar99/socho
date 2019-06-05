@@ -10,116 +10,28 @@ var CareNoteSchema = new mongoose.Schema({
         ref: 'User',
         required: true,
     },
-    Notes: [{
-        noteDatetime: {
-            noteDate:{
-                type:Date,
+    notesList: [{
+        dateTime: {
+            date:{
+                type:Date
             },
-            noteHour:{
-                type: Number,
-            },
-            noteMin:{
-                type: Number,
-            },
-        },
-        bloodPressure: {
-            systolic: {
+            hour:{
                 type: Number
             },
-            diastolic: {
+            min:{
                 type: Number
-            },
-        },
-        pulse: {
-            type: Number,
-        },
-        bodyTemp: {
-            type: Number
-        },
-        pulseOxygen:{
-            type: Number,
-        },
-        respiratoryRate:{
-            type: Number,
-        },
-        generalCondition: {
-            type: String,
-            enum: ['Normal', 'Fatigued', 'Exhausted', 'Weak'],
-        },
-        eating:{
-            breakfast:{
-                type:String,
-            },
-            lunch:{
-                type: String,
-            },
-            dinner:{
-                type:String,
-            },
-            description:{
-                type:String,
-            },
-            needsAssistance:{
-                type:String,
-                enum: ['Yes', 'No']
-            },
-        },
-        bowelMovement: {
-            bowelType: {
-                String,
-                enum: ['Normal', 'Diarreah', 'Constipated', 'AbdominalPain', 'AbdominalCramp', ]
-            },
-            needsToiletAssistance:{
-                type:String,
-                enum: ['Yes', 'No']
             }
         },
-        bloodGlucose: {
-                type: Number,
+        notes: {
+            type: String
         },
-        pain: {
-            painScore:{
-                type:Number,
-                enum:[1,2,3,4,5,6,7,8,9,10]
-            },
-            location:{
-                type:String,
-            },
-            pattern:{
-                type:String,
-                enum:['Constant','Intermittant']
-            },
-            affects:[{
-                type:String,
-                enum:['Sleep','Walking','Appetite']
-            }],
-            redness:{
-                type:String,
-                enum:['Yes','No']
-            },
-            swelling:{
-                type:String,
-                enum:['Yes','No']
-            },
+        fullName: {
+            type: String
         },
-        careNotes:{
-            type:String,
-        },
-        catheterChanged:{
-            type:String,
-            enum:['Yes','No']
-        },
-        Walking:{
-            wentWalking:{
-              type:String,
-              enum:['Yes','No'],
-            },
-            where:{
-                type:String,
-            }
-            
+        userId: {
+            type: String
         }
-    }],
+    }]
 });
 
 module.exports = mongoose.model('CareNote', CareNoteSchema);

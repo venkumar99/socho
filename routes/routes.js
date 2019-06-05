@@ -21,8 +21,6 @@ import policyController from '../controller/policyController';
 import dailyVaitalsController from '../controller/dailyVitalsController';
 import getDailyVitalsController from '../controller/getDailyVitalsController';
 
-
-
 var routes = express.Router();
 
 
@@ -69,7 +67,9 @@ routes.get('/insurance/:IDNum', authController.isAuthenticated,insuranceControll
 //routes.get('/insurance/:user_id',authController.isAuthenticated,insuranceController.getInsuranceForUser);
 
 //Routes for Care Notes
-routes.post('/careNote',authController.isAuthenticated, careNoteController.addNote);
+//routes.post('/careNote',authController.isAuthenticated, careNoteController.addNote);
+routes.get('/getCareNoteList', careNoteController.getCareNotes);
+routes.post('/addCareNote', careNoteController.addCareNote);
 
 //Routes for add new user
 routes.post('/addUser', addUserController.addUser);
@@ -111,6 +111,5 @@ routes.post('/pain', dailyVaitalsController.addPain);
 routes.post('/sleep', dailyVaitalsController.addSleep);
 
 routes.get('/getDailyVital', getDailyVitalsController.getLastUpdate);
-
 
 module.exports = routes;
