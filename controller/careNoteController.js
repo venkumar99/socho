@@ -46,18 +46,16 @@ careNoteController.addCareNote = function (req, res) {
 
 //care note list
 careNoteController.getCareNotes = function(req,res) { 
-    console.log('id ', req.query.userId) ; 
     CareNote.find(
         {
             userObjectId: req.query.userId
         }
     )
     .exec()
-    .then(function(notes) {
-        console.log('care note list ', notes);
+    .then((notes) => {
         res.status(200).json(
             { 
-                notesList: notes
+                notesList: notes[0].notesList
             }
         );  
         
