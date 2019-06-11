@@ -3,7 +3,6 @@ import moment from 'moment';
 import sgMail from '@sendgrid/mail';
 import CONFIG from '../config/config';
 import nodemailer from 'nodemailer';
-import path from 'path';
 
 import User from '../models/user';
 import AccountAccessList from '../models/accountAccessList';
@@ -220,10 +219,6 @@ addUserController.updateAccount = function(userDetail, res) {
         }
     });
 
-}
-
-addUserController.graphs = function(req, res) {
-    res.sendFile('dygraphs.html', { root: path.join(__dirname, '../public')});
 }
 
 module.exports = addUserController;

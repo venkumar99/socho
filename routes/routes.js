@@ -21,6 +21,8 @@ import policyController from '../controller/policyController';
 import dailyVaitalsController from '../controller/dailyVitalsController';
 import getDailyVitalsController from '../controller/getDailyVitalsController';
 
+import chartsController from '../controller/chartsController';
+
 var routes = express.Router();
 
 
@@ -79,7 +81,7 @@ routes.post('/account', addUserController.getAccountDetail);
 routes.get('/accountList', addUserController.getApprovedAccounts);
 
 
-routes.get('/graphs', addUserController.graphs);
+routes.get('/graphs/:chartName', chartsController.graphs);
 
 
 //Routes for consent
