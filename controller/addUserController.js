@@ -214,7 +214,6 @@ addUserController.updateAccount = function(userDetail, res) {
                     name: account.fullName 
                 };
                 consentController.addConsent(detail);
-                res.status(200).json('<h3>Thank you for authorization</h3>');
             });
         }
     });

@@ -43,7 +43,7 @@ consentController.getConsentList = function(request, response) {
  * @param {Object} request 
  * @param {Object} response 
  */
-consentController.addConsent = function(constentDetail) {  
+consentController.addConsent = function(constentDetail, res) {  
     var dateTime = consentController.getDateTime();
     var constentData = {
         userList: {
@@ -79,7 +79,7 @@ consentController.addConsent = function(constentDetail) {
     //Adding account detail to AccountList
     Consent.findOneAndUpdate( 
         {
-            userObjectId: constentDetail.userObjectId,
+            userObjectId: constentDetail.userId,
         },
         {
             $push: constentData
@@ -91,7 +91,11 @@ consentController.addConsent = function(constentDetail) {
     )
     .exec()
     .then(function (constent) { 
-        console.log("New Constent Added")
+        console.log("New Constent Added", constent)
+        res.status(200).json('User Added');
+    })
+    .catch((err) => {
+        console.error("Fail to add new constent", err) ;
     });
 }
 
